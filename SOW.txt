@@ -11,32 +11,32 @@ We are trying to create a twist on the classic battleship game everyone knows an
 Scope: A 2 client game with turn based actions until a winner is decided.
 Inclusions:
 
-1. Create a skeleton of files neede (server, client, game engine, score track counter, historical data, etc.)
+1. Create a skeleton of files needed (server, client, game engine, score track counter, historical data, etc.)
 2. Research already finished games with libraries we can use to make dev easier
 3. Start with Server-client connections on both local machine and lab machines 
-4. Being with game code, this will be done offline to start, as implementing simple wait and accept commands will be ideal
+4. Begin with game code, this will be done offline to start, as implementing simple wait and accept commands will be ideal
     - this is because battle ship is a turn based game, meaning the server will be a simple "wait until command is given"
 5. Once game code is written, implement the TCP connection features
-6. debugging game with TCP connections, include edge cases with TCP and possible game bugs over network
-7. implement other features ontop of game, such as, score keeping, historical game data, user accounts, etc.
-8. add any last second things to fix/make game cooler
+6. Debug game with TCP connections, including edge cases with TCP and possible game bugs over network
+7. Implement other features ontop of game, such as, score keeping, historical game data, user accounts, etc.
+8. Add any last second things to fix/make game cooler
 Exclusions:
 NA
 
 Deliverables:
 
     1. A working game with client/server code
-    2. documentation on how to play game
-    3. a list of steps taken to accomplish goal
+    2. Documentation on how to play game
+    3. Reviewable GitHub history of the game's development process
 
 Timeline:
 Key Milestones:
 
-    Sprint 1: set up git hub, set up client/server connections on lab machines
+    Sprint 1: Set up git hub, set up client/server connections on lab machines
     Sprint 2: Create the game UI with 2 clients on one single machine(split screen gameplay)
     Sprint 3: implement the client/server into the battle ship UI
     Sprint 4: Debug and play test the game
-    Sprint 5: Add any features we can to increase playability/make the project more fun
+    Sprint 5: Add any features we can to increase playability/make the project more fun such as sound and visual effects
 
 Task Breakdown:
 
