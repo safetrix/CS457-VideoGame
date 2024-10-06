@@ -6,7 +6,7 @@ import threading
 import logging
 
 #serverSelector = selectors.DefaultSelector()
-logging.basicConfig(filename = 'connections.log', level = logging.INFO)
+logging.basicConfig(filename = 'server_connections.log', level = logging.INFO)
 
 
 def start():
@@ -32,7 +32,7 @@ def start():
             client_thread.start()
         except Exception as e:
             logging.error("Error in connection attempt: ", e)
-
+        
 def client_response(clientSocket, addr):
     while True:
         message = clientSocket.recv(1024) # need to adjust size based on implementation
@@ -41,8 +41,13 @@ def client_response(clientSocket, addr):
             break
         print("Recieved a message from ", addr)
         print("message recieved: ", message.decode())
-        print("sending messages back to client")
-        clientSocket.send(b"ACK")
-        
+        client_message(clientSocket, addr, b"ACK message")        
+    
+def client_message(clientSocket, addr, message):
+    try:
+        print(f"sending : {message} to {addr}")
+        clientSocket.send(message)     
+    except Exception as e:
+         logging.error("Error in message attempt: ", e)
 
 start()
