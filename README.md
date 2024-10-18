@@ -10,10 +10,10 @@ This is going to be a simple implementation of the classic battleship game
 5. successful hits will result in successive turns
 
 **Message Protocol:**
-*Join:* Maximum of two clients can join the server at any given time
-*Chat:* Players can send messages to eachother
-*Move:* Placeholder action, to be revised later
-*Quit:* Leave server and notify the other client
+* *Join:* Maximum of two clients can join the server at any given time
+* *Chat:* Players can send messages to eachother
+* *Move:* Placeholder action, to be revised later
+* *Quit:* Leave server and notify the other client
 
 **Technologies used:**
 * Python
