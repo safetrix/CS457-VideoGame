@@ -115,8 +115,8 @@ class Server:
 
 
     def check_win_condition(self, opponent_id):
-        # Implement your win condition check here once GUI is implemented
-        return False  # For now, always return False
+        # Implement win condition check here once GUI is implemented
+        return False
 
     def reset_game(self):
         self.ready_players.clear()
