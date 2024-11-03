@@ -17,7 +17,7 @@ This is going to be a simple implementation of the classic battleship game
 
 **Multi-player Functionality:**
 * *Codename:* Players can now use a custom name rather than a player ID
-* *Check Board* Players can see the game state information such as plays made, ships sunk, etc.
+* *Check Board:* Players can see the game state information such as plays made, ships sunk, etc.
 * *Move:* Players can now take turns guessing spots on the board
 
 **Technologies used:**
