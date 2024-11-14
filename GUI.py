@@ -15,6 +15,12 @@ class GUI:
         self.confirmation_label = None
         self.player1_grid = None
         self.player2_grid = None
+        self.frame = None
+        self.chat_window = None
+        self.chat_display = None
+        self.entry_field = None
+        self.messages = []
+        self.name = None
 
         # Set up the main window UI components
         self.initialize_ui()
@@ -34,15 +40,12 @@ class GUI:
 
         # Create menu for options
         self.menu = tk.Menu(self.main_window, tearoff=0)
-        self.menu.add_command(label="Borderless Window", command=lambda: self.option_selected("Borderless Window"))
-        self.menu.add_command(label="Open Chat", command=lambda: self.option_selected("Open Chat"))
+        self.menu.add_command(label="Open Chat", command=self.open_chat_window)
         self.menu.add_command(label="Quit", command=self.main_window.quit)
 
         # Bind menu to options label click
         self.options_label.bind("<Button-1>", self.menu_show)
 
-    def option_selected(self, option):
-        print(f"{option} selected!")
 
     def open_name_window(self):
         self.start_button.place_forget()
@@ -56,15 +59,15 @@ class GUI:
         name_entry.place(relx=0.5, rely=0.5, anchor="center")
 
         def submit_name():
-            name = name_entry.get()
-            print(f"Name entered: {name}")
+            self.name = name_entry.get()
+            print(f"Name entered: {self.name}")
             # Hide name entry components
             name_label.place_forget()
             name_entry.place_forget()
             submit_button.place_forget()
 
             # Show confirmation label
-            self.confirmation_label = tk.Label(self.main_window, text=f"Welcome, {name}!\nWaiting for other player to join...", font=("Helvetica", 24))
+            self.confirmation_label = tk.Label(self.main_window, text=f"Welcome, {self.name}!\nWaiting for other player to join...", font=("Helvetica", 24))
             self.confirmation_label.place(relx=0.5, rely=0.5, anchor="center")
             self.main_window.after(5000, self.hide_confirmation_message)
              #opening game board after clients connect
@@ -95,23 +98,15 @@ class GUI:
     def create_grid(self, x_position, title):
         print("creating grid now")
         frame = tk.Frame(self.main_window)
-        frame.place(relx=x_position, rely=0.5, anchor="center")
+        frame.place(relx=0.5, rely=0.5, anchor="center")
 
-        # Create the grid label
-        grid_label = tk.Label(frame, text=title, font=("Helvetica", 24))
-        grid_label.grid(row=0, column=0, columnspan=10)
-
-        # Create a 10x10 grid of buttons (representing the game cells)
-        grid_buttons = []
-        for i in range(10):
-            row = []
-            for j in range(10):
-                button = tk.Button(frame, text="", width=4, height=2, relief="solid", command=lambda i=i, j=j: self.cell_clicked(i, j))
-                button.grid(row=i+1, column=j)
-                row.append(button)
-            grid_buttons.append(row)
-
-        return grid_buttons
+        title_label = tk.Label(self.frame, text="Create your board", font=("Arial", 24, "bold"))
+        title_label.pack(side="top", pady=10)
+        for row in range(10):
+            for col in range(10):
+                button = tk.Button(frame, text=" ", width=4, height=2,
+                           command=lambda r=row, c=col: self.cell_clicked(r, c))
+                button.grid(row=row, column=col)
 
     def player_grids(self):
         print("showing grids")
@@ -121,9 +116,78 @@ class GUI:
     def cell_clicked(self, row, col):
         print(f"Cell clicked at Row {row}, Column {col}")
 
+    def open_chat_window(self):
+        self.chat_window = tk.Toplevel(self.main_window)
+        self.chat_window.title("Chat Window")
+        self.chat_window.geometry("400x300")
+
+        self.chat_window.lift()  # Bring chat window to the front
+
+        # Create a frame for holding the entry field and send button
+        chat_frame = tk.Frame(self.chat_window)
+        chat_frame.pack(side="bottom", fill="x", pady=10)
+
+        self.chat_display = tk.Text(self.chat_window, width=40, height=10, wrap="word", state="disabled")
+        self.chat_display.pack(pady=10, padx=10)
+
+        # Entry field for typing a message
+        self.entry_field = tk.Entry(chat_frame, width=40)
+        self.entry_field.pack(side="top", pady=5, padx=10)
+
+        # Send button below the entry field
+        send_button = tk.Button(chat_frame, text="Send", command= self.send_message)
+        send_button.pack(side="top", pady=5)
+
+        self.simulate_server_messages()
+
+        def minimize_chat_window():
+            self.chat_window.withdraw()  # Hides the window instead of minimizing
+
+    # You can add your own button if needed
+        minimize_button = tk.Button(self.chat_window, text="Minimize", command=minimize_chat_window)
+        minimize_button.pack(side="bottom", pady=10)
+    def send_message(self):
+        message = self.entry_field.get()
+        if message:
+            username = self.name
+            self.messages.append({"user": username, "message": message})
+            self.entry_field.delete(0, "end")
+            self.update_chat()
+    def update_chat(self):
+
+        self.chat_display.config(state="normal")
+
+        self.chat_display.delete(1.0, "end")
+
+        for message in reversed(self.messages):
+            self.chat_display.insert("1.0",f"{message['user']}: {message['message']}\n")
+        #self.chat_display.yview("1.0")
+        # Disable editing so the user can't modify the messages
+        self.chat_display.yview("end")
+
+        self.chat_display.config(state="disabled")
+    def simulate_server_messages(self):
+        # Simulate server sending messages every few seconds
+        import random
+        import time
+
+        # This is a placeholder function to simulate receiving messages from the server
+        def receive_message_from_server():
+            # Simulate a new message from the server (could be replaced with actual server logic)
+            new_message = f"Server message {random.randint(1, 100)}"
+            username = "Server"  # Simulate server user
+            self.messages.append({"user": username, "message": new_message})
+            self.update_chat()
+
+            # Call this function again after a short delay to simulate continuous updates
+            self.chat_window.after(3000, receive_message_from_server)  # Update every 3 seconds
+
+        receive_message_from_server()
+    
 
 # Create the main application window
 main_window = tk.Tk()
+
 
 # Create an instance of the GUI class
 app = GUI(main_window)
