@@ -73,9 +73,6 @@ class GUI:
 
         self.hide_buttons()
 
-
-        self.hide_ship_buttons()
-
         self.canvas = tk.Canvas(main_window, width=self.canvas_width, height=self.canvas_height) 
         self.canvas.place(x=self.canvas_x, y=self.canvas_y) # Center the grid based on screen size
         self.canvas.bind("<Motion>", self.highlight_cell)
@@ -490,4 +487,4 @@ main_window = tk.Tk()
 app = GUI(main_window)
 main_window.bind("<Key>", app.rotate_ship)
 
-app.start_game()
+app.start_game('127.0.0.1', 65432)
