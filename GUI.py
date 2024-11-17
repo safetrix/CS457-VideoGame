@@ -47,7 +47,8 @@ class GUI:
         }
 
         self.ship_to_place = None
-        self.placed_cells = set()
+        self.placed_cells = {}
+        self.saved_board = set()
         self.ship_orientation = 'horizontal'
         
         self.canvas_width = 500
@@ -67,6 +68,11 @@ class GUI:
         self.clear_button = tk.Button(main_window, text="Erase Board", command=self.clear_board)
         self.clear_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 6 * 30)
 
+        # Ready up button
+        self.ready_button = tk.Button(main_window, text="Ready Up", state=tk.DISABLED, command=self.on_ready_up)
+
+        self.hide_buttons()
+
 
         self.hide_ship_buttons()
 
@@ -74,6 +80,8 @@ class GUI:
         self.canvas.place(x=self.canvas_x, y=self.canvas_y) # Center the grid based on screen size
         self.canvas.bind("<Motion>", self.highlight_cell)
         self.canvas.bind("<Button-1>", self.place_ship)
+
+        self.turn = 1
 
         # Set up the main window UI components
         self.initialize_ui()
@@ -181,7 +189,7 @@ class GUI:
     def open_game_board(self):
         self.player_grids()
         self.main_window.update()
-        self.show_ship_buttons()
+        self.show_buttons()
 
     def create_grid(self):
         self.cells = {}
@@ -229,10 +237,9 @@ class GUI:
     def place_ship(self, event):
         col = event.x // 50
         row = event.y // 50
-        print(f"Placing ship at cell: ({row}, {col})")
+        print(f"Placing {self.ship_to_place} at cell: ({row}, {col})")
         if self.ship_to_place:
             size = self.ships_info[self.ship_to_place]["size"]
-            #placed = False
             can_place = True
 
             if self.ship_orientation == "horizontal":
@@ -259,11 +266,11 @@ class GUI:
                 if self.ship_orientation == 'horizontal':
                     for i in range(size):
                         self.canvas.itemconfig(self.cells[(row, col + i)], fill="green")
-                        self.placed_cells.add((row, col + i))
+                        self.placed_cells[(row, col + i)] = self.ship_to_place
                 else:
                     for i in range(size):
                         self.canvas.itemconfig(self.cells[(row + i, col)], fill="green")
-                        self.placed_cells.add((row + i, col))
+                        self.placed_cells[(row + i, col)] = self.ship_to_place
 
                 self.ships_info[self.ship_to_place]["count"] += 1
 
@@ -274,6 +281,7 @@ class GUI:
                             button.config(state=tk.DISABLED) # Ship placed, reset the selection 
                 # reset selection once ship is placed
                 self.ship_to_place = None
+        self.update_button_state()
     
     def clear_board(self):
         # Reset board and ship counts
@@ -296,16 +304,18 @@ class GUI:
             self.ship_orientation = 'vertical' if self.ship_orientation == 'horizontal' else 'horizontal'
             print (f"Changing ship orientation to {self.ship_orientation}")
 
-    def hide_ship_buttons(self):
+    def hide_buttons(self):
         for button in self.ship_buttons:
             button.place_forget()
         self.clear_button.place_forget()
+        self.ready_button.place_forget()
         print("Hiding ship buttons")
 
-    def show_ship_buttons(self):
+    def show_buttons(self):
         for i, button in enumerate(self.ship_buttons):
             button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + i * 30)
         self.clear_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 6 * 30)
+        self.ready_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 7 * 30)
         print("Showing ship buttons")
     # Messaging Functionality
 
@@ -376,13 +386,108 @@ class GUI:
             self.chat_window.after(3000, receive_message_from_server)  # Update every 3 seconds
 
         receive_message_from_server()
+    
+    # Ready Up Functionality
+    def check_ship_placed(self):
+        for ship, details in self.ships_info():
+            if details["count"] != details["max"]:
+                return False
+        return True
+    
+    def on_ready_up(self):
+        # Save current board layout
+        self.saved_board = self.placed_cells.copy()
+        print("Board saved")
+        self.clear_board()
+        self.create_small_grid()
+        # Update ready button to attack button
+        self.ready_button.config(text="Attack")
+        self.ready_button.config(command=self.attack)
+        self.canvas.bind("<Motion>", self.highlight_attack_cell)
+        self.canvas.bind("<Button-1>", self.attack_cell)
+    
+    def highlight_attack_cell(self, event): 
+        col = event.x // 50 
+        row = event.y // 50 
+        
+        for (x, y), cell in self.cells.items(): 
+            if (x, y) in self.saved_board: self.canvas.itemconfig(cell, fill="green") 
+            elif self.canvas.itemcget(cell, 'fill') == 'yellow': self.canvas.itemconfig(cell, fill="yellow") 
+            elif self.canvas.itemcget(cell, 'fill') == 'red': self.canvas.itemconfig(cell, fill="red") 
+            else: self.canvas.itemconfig(cell, fill="light blue")
+              
+            if 0 <= col < 10 and 0 <= row < 10: self.canvas.itemconfig(self.cells[(row, col)], fill="red")
 
     
+    def create_small_grid(self):
+        small_canvas_width = 200
+        small_canvas_height = 200
+        small_canvas_x = self.canvas_x + self.canvas_width + 20
+        small_canvas = tk.Canvas(self.main_window, width=small_canvas_width, height=small_canvas_height, bg="white")
+        small_canvas.place(x=small_canvas_x, y=self.canvas_y)
+
+        for row in range(10):
+            for col in range(10):
+                x1 = col * 20
+                y1 = row * 20
+                x2 = x1 + 20
+                y2 = y1 + 20
+                cell = small_canvas.create_rectangle(x1, y1, x2, y2, fill="light blue")
+                if(row, col) in self.saved_board:
+                    small_canvas.itemconfig(cell, fill="green")
+    
+    def update_button_state(self):
+        all_placed = all(info["count"] == info["max"] for info in self.ships_info.values()) 
+        if all_placed: self.ready_button.config(state=tk.NORMAL) 
+        else: self.ready_button.config(state=tk.DISABLED)
+    
+    def attack_cell(self, event):
+        col = event.x // 50
+        row = event.y // 50
+        print(f"{self.name} fired a shot at ({row}, {col})")
+
+        if self.turn == 1:
+            if (row, col) in self.saved_board:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="red")
+                print(f"{self.name}'s {self.saved_board[(row, col)]} was HIT!")
+                self.check_ship_sunk(row, col, self.saved_board)
+            else:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
+                print("MISS!")
+            
+            self.turn = 2
+        
+        elif self.turn == 2:
+            if (row, col) in self.saved_board:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="red")
+                print(f"{self.name}'s {self.saved_board[(row, col)]} was HIT!")
+                self.check_ship_sunk(row, col, self.saved_board)
+            else:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
+                print("MISS!")
+            
+            self.turn = 1
+    
+    def check_ship_sunk(self, row, col, board):
+        ship_type = board[(row, col)]
+        sunk = all(
+            pos not in board or board [pos] != ship_type
+            for pos in board
+        )
+        if sunk:
+            print(f"{self.name}'s {ship_type} was sunk!")
+    
+    def attack(self):
+        if (self.turn == 1):
+            print(f"{self.name} is attacking")
+        else:
+            print("It is not your turn!")
+        
 # Create the main application window
-#main_window = tk.Tk()
+main_window = tk.Tk()
 
 # Create an instance of the GUI class
-#app = GUI(main_window)
-#main_window.bind("<Key>", app.rotate_ship)
+app = GUI(main_window)
+main_window.bind("<Key>", app.rotate_ship)
 
-#app.start_game()
+app.start_game()
