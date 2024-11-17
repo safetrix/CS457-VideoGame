@@ -57,20 +57,17 @@ class Server:
         try:
             message = json.loads(data.decode())
             logging.info(f"Message received from {player_id}: {message}")
+            print(f"Message from {player_id}: {message}")
+            if message["type"] == "ready":
+                self.clients[player_id]["ready"] = True
+                self.ready_players.add(player_id)
+                logging.debug(f"Player is ready. Ready players: {len(self.ready_players)}")
+                print((f"Player is ready. Ready players: {len(self.ready_players)}"))
 
-            if message["type"] == "codename":
-                self.clients[player_id]["codename"] = message["codename"] or player_id  # Use player ID if no codename provided
-                self.send_client_message(sock, {"type": "notice", "message": f"Your codename is set to {self.clients[player_id]['codename']}"})
-                self.broadcast_message({"type": "notice", "message": f"Player {self.clients[player_id]['codename']} joined the game."})
-            elif message["type"] == "ready":
-                if self.clients[player_id]["codename"]:  # Ensure the player has a codename
-                    self.clients[player_id]["ready"] = True
-                    self.ready_players.add(player_id)
-                    logging.debug(f"Player {player_id} is ready. Ready players: {len(self.ready_players)}")
-                    if len(self.ready_players) == 2 and all(self.clients[pid]["codename"] for pid in self.ready_players):
-                        self.start_battleship()
-                else:
-                    self.send_client_message(sock, {"type": "error", "message": "You must set your codename before readying up."})
+                if len(self.ready_players) == 2 and all(self.clients[pid]["codename"] for pid in self.ready_players):
+                    self.start_battleship()
+             
+                self.send_client_message(sock, {"type": "error", "message": "You must set your codename before readying up."})
             elif message["type"] == "move":
                 if self.turn_order[self.current_turn] == player_id:
                     opponent_id = self.turn_order[(self.current_turn + 1) % 2]
