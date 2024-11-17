@@ -1,4 +1,9 @@
 import tkinter as tk
+import socket
+import logging
+import json
+import threading
+
 
 
 class GUI:
@@ -25,6 +30,12 @@ class GUI:
         self.entry_field = None
         self.messages = []
         self.name = None
+        self.submit_ships_button = None
+        self.host = None
+        self.port = None
+        self.sock = None
+        self.server_conn_message = None
+        self.thread = None
         
         # Ship size and max # of that ship type
         self.ships_info = {
@@ -62,6 +73,9 @@ class GUI:
 
         self.hide_buttons()
 
+
+        self.hide_ship_buttons()
+
         self.canvas = tk.Canvas(main_window, width=self.canvas_width, height=self.canvas_height) 
         self.canvas.place(x=self.canvas_x, y=self.canvas_y) # Center the grid based on screen size
         self.canvas.bind("<Motion>", self.highlight_cell)
@@ -71,6 +85,8 @@ class GUI:
 
         # Set up the main window UI components
         self.initialize_ui()
+        self.main_window.bind("<Key>", self.rotate_ship)
+
 
     def initialize_ui(self):
         # Start Game button
@@ -100,7 +116,28 @@ class GUI:
         self.start_button.place_forget()
         self.quit_button.place_forget()
 
-        # Create name entry label and entry box
+        self.server_conn_message = tk.Label(self.main_window, text=f"Connecting to server!", font=("Helvetica", 24))
+        self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
+
+        addr = (self.host, self.port)
+        print("Starting connection to", addr)
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        logging.info(f"Connection created: {addr}")
+        self.sock.connect((self.host, self.port))
+        self.server_conn_message.place_forget()
+        self.server_conn_message = tk.Label(self.main_window, text=f"Server Connected!", font=("Helvetica", 24))
+        self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
+        self.main_window.after(5000, self.show_name_entry)
+        #except Exception as e:
+            #print("Error:", e)
+            #logging.error("Error in connection attempt:", e)SS
+            #self.server_conn_message.place_forget()
+            #self.error_label = tk.Label(self.main_window, text=f"There was an error connecting to the server, check log for more information", font=("Helvetica", 24))
+            #self.error_label.place(relx=0.5, rely=0.45, anchor="center")
+        return True
+    def show_name_entry(self):
+        self.server_conn_message.place_forget()
         name_label = tk.Label(self.main_window, text="Enter your name:", font=("Helvetica", 24))
         name_label.place(relx=0.5, rely=0.45, anchor="center")
 
@@ -110,20 +147,19 @@ class GUI:
         def submit_name():
             self.name = name_entry.get()
             print(f"Name entered: {self.name}")
-            # Hide name entry components
             name_label.place_forget()
             name_entry.place_forget()
             submit_button.place_forget()
 
-            # Show confirmation label
+                # Show confirmation label
             self.confirmation_label = tk.Label(self.main_window, text=f"Welcome, {self.name}!\nWaiting for other player to join...", font=("Helvetica", 24))
             self.confirmation_label.place(relx=0.5, rely=0.5, anchor="center")
-            self.main_window.after(5000, self.hide_confirmation_message)
-             #opening game board after clients connect
 
+            self.send_client_message({"type": "ready"})
+
+                #opening game board after clients connect
         submit_button = tk.Button(self.main_window, text="Submit", font=("Helvetica", 14), command=submit_name)
         submit_button.place(relx=0.5, rely=0.55, anchor="center")
-
 
     def hide_confirmation_message(self):
         # Debug: Print when the message is being hidden
@@ -133,13 +169,22 @@ class GUI:
         if self.confirmation_label:
             self.confirmation_label.place_forget()
         self.open_game_board()
-
+        
+    def send_client_message(self, message):
+        try:
+            msg = json.dumps(message).encode() + b'\n'
+            self.sock.send(msg)
+            logging.info(f"Message sent to server: {message}")
+        except Exception as e:
+            logging.error("Error in message attempt:", e)
     def menu_show(self, event):
         # Show the menu when the options label is clicked
         self.menu.post(event.x_root, event.y_root)
 
-    def start_game(self):
-        main_window.mainloop()
+    def start_game(self, host, port):
+        self.host = host
+        self.port = port
+        self.main_window.mainloop()
 
     def open_game_board(self):
         self.player_grids()
@@ -272,7 +317,6 @@ class GUI:
         self.clear_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 6 * 30)
         self.ready_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 7 * 30)
         print("Showing ship buttons")
-
     # Messaging Functionality
 
     def open_chat_window(self):
@@ -371,7 +415,7 @@ class GUI:
             elif self.canvas.itemcget(cell, 'fill') == 'yellow': self.canvas.itemconfig(cell, fill="yellow") 
             elif self.canvas.itemcget(cell, 'fill') == 'red': self.canvas.itemconfig(cell, fill="red") 
             else: self.canvas.itemconfig(cell, fill="light blue")
-
+              
             if 0 <= col < 10 and 0 <= row < 10: self.canvas.itemconfig(self.cells[(row, col)], fill="red")
 
     
@@ -439,8 +483,6 @@ class GUI:
         else:
             print("It is not your turn!")
         
-
-
 # Create the main application window
 main_window = tk.Tk()
 
