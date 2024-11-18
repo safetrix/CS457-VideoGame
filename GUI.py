@@ -73,9 +73,6 @@ class GUI:
 
         self.hide_buttons()
 
-
-        self.hide_ship_buttons()
-
         self.canvas = tk.Canvas(main_window, width=self.canvas_width, height=self.canvas_height) 
         self.canvas.place(x=self.canvas_x, y=self.canvas_y) # Center the grid based on screen size
         self.canvas.bind("<Motion>", self.highlight_cell)
@@ -109,8 +106,8 @@ class GUI:
         # Bind menu to options label click
         self.options_label.bind("<Button-1>", self.menu_show)
 
-    def option_selected(self, option):
-        print(f"{option} selected!")
+    def getSock(self):
+        return self.sock
 
     def open_name_window(self):
         self.start_button.place_forget()
@@ -125,6 +122,7 @@ class GUI:
 
         logging.info(f"Connection created: {addr}")
         self.sock.connect((self.host, self.port))
+        self.thread = threading.Thread(target=self.listen_to_server).start()
         self.server_conn_message.place_forget()
         self.server_conn_message = tk.Label(self.main_window, text=f"Server Connected!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
@@ -405,6 +403,8 @@ class GUI:
         self.ready_button.config(command=self.attack)
         self.canvas.bind("<Motion>", self.highlight_attack_cell)
         self.canvas.bind("<Button-1>", self.attack_cell)
+        print("board that is being sent", self.saved_board)
+        self.send_client_message({"type": "board", "message": self.saved_board})
     
     def highlight_attack_cell(self, event): 
         col = event.x // 50 
@@ -482,12 +482,39 @@ class GUI:
             print(f"{self.name} is attacking")
         else:
             print("It is not your turn!")
+
+    def listen_to_server(self):
+        print("Listening to server")
+        buffer = ""
+        while True:
+            try:
+                data = self.sock.recv(1024).decode()
+                if data:
+                    buffer += data
+                    while '\n' in buffer:
+                        message, buffer = buffer.split('\n', 1)
+                        self.handle_server_message(json.loads(message))
+                else:
+                    break
+            except Exception as e:
+                logging.error("Error receiving server message:", e)
+
+    def handle_server_message(self, message):
+        try:
+            logging.info(f"Message received from server: {message}")
+
+            if message["type"] == "notice":
+                if message["message"] == "Please Create your board": #send board creation to players
+                    self.confirmation_label.place_forget()
+                    self.show_buttons()
+                    self.player_grids()
+                    
+            if message["type"] == "chat":
+                print(f"Chat message from {message['codename']}: {message['message']}")
+            else:
+                print(f"Unknown message type: {message['type']}")
+        except Exception as e:
+            logging.error("Error handling message:", e)
         
 # Create the main application window
-main_window = tk.Tk()
-
 # Create an instance of the GUI class
-app = GUI(main_window)
-main_window.bind("<Key>", app.rotate_ship)
-
-app.start_game()
