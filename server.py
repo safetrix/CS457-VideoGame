@@ -39,7 +39,6 @@ class Server:
         player_id = str(uuid.uuid4())
         self.selector.register(client_socket, selectors.EVENT_READ, data=player_id)
         self.clients[player_id] = {"socket": client_socket, "state": "connected", "addr": addr, "codename": None, "ready": False, "board": self.default_board(), "moves": [], "sank_ships": []}
-        self.send_client_message(client_socket, {"type": "welcome", "message": "Enter your codename:", "player_id": player_id})
 
     def service_connection(self, key, mask):
         sock = key.fileobj
@@ -63,36 +62,39 @@ class Server:
                 self.ready_players.add(player_id)
                 logging.debug(f"Player is ready. Ready players: {len(self.ready_players)}")
                 print((f"Player is ready. Ready players: {len(self.ready_players)}"))
-
-                if len(self.ready_players) == 2 and all(self.clients[pid]["codename"] for pid in self.ready_players):
-                    self.start_battleship()
-             
-                self.send_client_message(sock, {"type": "error", "message": "You must set your codename before readying up."})
+                if len(self.ready_players) == 2:
+                    self.start_battleship() #send messgae to players saying both connected
+            elif message["type"] =="board":
+                print("board sent from client ", message["message"])
             elif message["type"] == "move":
-                if self.turn_order[self.current_turn] == player_id:
-                    opponent_id = self.turn_order[(self.current_turn + 1) % 2]
-                    move = message["move"]
-                    if self.valid_move(move, opponent_id):
-                        if self.clients[opponent_id]["board"][move] == "empty":
-                            result = "miss"
-                        else:
-                            result = "hit"
-                        self.clients[opponent_id]["board"][move] = result
-                        self.clients[opponent_id]["moves"].append(move)
-                        self.send_client_message(sock, {"type": "move_result", "move": move, "result": result})  # Send move result to client
+                pass
+                # if self.turn_order[self.current_turn] == player_id:
+                #     opponent_id = self.turn_order[(self.current_turn + 1) % 2]
+                #     move = message["move"]
+                #     if self.valid_move(move, opponent_id):
+                #         if self.clients[opponent_id]["board"][move] == "empty":
+                #             result = "miss"
+                #         else:
+                #             result = "hit"
+                #         self.clients[opponent_id]["board"][move] = result
+                #         self.clients[opponent_id]["moves"].append(move)
+
+
+                #WE NOW DO NOT NEED THIS LOGIC AS IT WILL HANDLE IN THE GUI 
+                    # self.send_client_message(sock, {"type": "move_result", "move": move, "result": result})  # Send move result to client which will go to the other player
 
                         # Check for win condition
-                        if self.check_win_condition(opponent_id):
-                            self.broadcast_message({"type": "notice", "message": f"{self.clients[player_id]['codename']} wins!"})
-                            self.reset_game()
-                        else:
-                            self.current_turn = (self.current_turn + 1) % len(self.turn_order)
-                            current_player = self.clients[self.turn_order[self.current_turn]]["codename"]
-                            self.broadcast_message({"type": "update", "game_state": self.get_game_state(), "current_turn": current_player})  # Send codename instead of player ID
-                    else:
-                        self.send_client_message(sock, {"type": "error", "message": "Invalid move!"})
-                else:
-                    self.send_client_message(sock, {"type": "error", "message": "It's not your turn!"})
+                        # if self.check_win_condition(opponent_id):
+                        #     self.broadcast_message({"type": "notice", "message": f"{self.clients[player_id]['codename']} wins!"})
+                        #     self.reset_game()
+                        # else:
+                        #     self.current_turn = (self.current_turn + 1) % len(self.turn_order)
+                        #     current_player = self.clients[self.turn_order[self.current_turn]]["codename"]
+                        #     self.broadcast_message({"type": "update", "game_state": self.get_game_state(), "current_turn": current_player})  # Send codename instead of player ID
+                    # else:
+                    #     self.send_client_message(sock, {"type": "error", "message": "Invalid move!"})
+                # else:
+                #     self.send_client_message(sock, {"type": "error", "message": "It's not your turn!"})
             elif message["type"] == "chat":
                 self.broadcast_message({"type": "chat", "message": message["message"], "codename": self.clients[player_id]["codename"]})
             elif message["type"] == "check_board":
@@ -168,20 +170,23 @@ class Server:
 
     def start_battleship(self):
         logging.debug("Both players are ready. Starting game...")
-        self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
-        random.shuffle(self.turn_order)  # Shuffle to select who starts first
-        self.current_turn = 0
-        self.notify_game_start()  # Notify both clients that the game has started
-        current_player = self.clients[self.turn_order[self.current_turn]]["codename"]  # Define current_player
-        self.broadcast_message({
-            "type": "notice",
-            "message": f"The game has started! {current_player} goes first."
-        })
-        self.broadcast_message({
-            "type": "update",
-            "game_state": self.get_game_state(),
-            "current_turn": current_player  # Send codename instead of player ID
-        })
+        self.broadcast_message({"type": "notice", "message": f"Please Create your board"})
+        print("sending message to players")
+
+        # self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
+        # random.shuffle(self.turn_order)  # Shuffle to select who starts first
+        # self.current_turn = 0
+        # self.notify_game_start()  # Notify both clients that the game has started
+        # current_player = self.clients[self.turn_order[self.current_turn]]["codename"]  # Define current_player
+        # self.broadcast_message({
+        #     "type": "notice",
+        #     "message": f"The game has started! {current_player} goes first."
+        # })
+        # self.broadcast_message({
+        #     "type": "update",
+        #     "game_state": self.get_game_state(),
+        #     "current_turn": current_player  # Send codename instead of player ID
+        # })
 
 
     def default_board(self): # Empty board for now, custom boards will be used in GUI
