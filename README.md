@@ -3,22 +3,11 @@ Project for CS457 Computer Networks and the Internet
 
 This is going to be a simple implementation of the classic battleship game
 **How to play:**
-1. 2 clients will connect to the server, through the use of TCP connections
-2. Each player will have a 10 x 10 board with 5 ships of carying size
-3. players will take turns firing at the other ship unknown of their exact location
-4. this will continue until a player loses their entire fleet
-5. successful hits will result in successive turns
-
-**Message Protocol:**
-* *Join:* Maximum of two clients can join the server at any given time
-* *Chat:* Players can send messages to eachother
-* *Move:* Placeholder action, to be revised later
-* *Quit:* Leave server and notify the other client
-
-**Multi-player Functionality:**
-* *Codename:* Players can now use a custom name rather than a player ID
-* *Check Board:* Players can see the game state information such as plays made, ships sunk, etc.
-* *Move:* Players can now take turns guessing spots on the board
+1. Launch server.py and two instances of client.py
+2. Both clients press start game and enter their player name
+3. Client designs a game board by selecting the ship type using the buttons on the right and selecting a tile on the 10 x 10 grid. Ships can be rotated by pressing 'R' on the keyboard
+4. Once all ships are placed the 'Ready' button can be clicked, which will then save the game board and start the game
+5. Each player takes turns selecting a tile on the grid and attacking, game continues until all ships have been sunk by an opposing player
 
 **Technologies used:**
 * Python
