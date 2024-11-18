@@ -15,6 +15,7 @@ class Server:
         self.ready_players = set()
         self.board1 = []
         self.board2 = []
+        self.board_count = None
         logging.basicConfig(filename='server_connections.log', level=logging.DEBUG)  # Set to DEBUG level
 
     def start_game(self):
@@ -69,10 +70,16 @@ class Server:
             elif message["type"] =="board":
                 print("board sent from client ", message["message"])
                 print("Sending opponent board to the client")
-                print(next(pid for pid in self.clients if pid != player_id))
-                self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "opponent board", "message": message["message"]})
+                opponent_ID = next(pid for pid in self.clients if pid != player_id)
+                print(opponent_ID)
+                print("clients socket ", self.clients[opponent_ID]["socket"])
+                self.send_client_message(self.clients[opponent_ID]["socket"], {"type": "opponent board", "message": message["message"]})
+                # if self.board_count == 2:
+                #     self.broadcast_message({"type": "boards sent"}) #was trying to stop the clients from placing before both boards were sent cant get to work quite yet
+
                  #this ensures the board is sent to the other PID
-                
+            
+
 
             elif message["type"] == "move":
                 pass
