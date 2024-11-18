@@ -13,6 +13,7 @@ class Server:
         self.ready_players = set()
         self.board1 = []
         self.board2 = []
+        self.board_count = None
         logging.basicConfig(filename='server_connections.log', level=logging.DEBUG)  # Set to DEBUG level
 
     def start_game(self):
@@ -69,8 +70,6 @@ class Server:
                 print("Sending opponent board to the client")
                 self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "opponent board", "message": message["message"]})
                  #this ensures the board is sent to the other PID
-                
-
             elif message["type"] == "move":
                 pass
             elif message["type"] == "chat":
@@ -146,6 +145,22 @@ class Server:
         logging.debug("Both players are ready. Starting game...")
         self.broadcast_message({"type": "notice", "message": f"Please Create your board"})
         print("sending message to players")
+
+        # self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
+        # random.shuffle(self.turn_order)  # Shuffle to select who starts first
+        # self.current_turn = 0
+        # self.notify_game_start()  # Notify both clients that the game has started
+        # current_player = self.clients[self.turn_order[self.current_turn]]["codename"]  # Define current_player
+        # self.broadcast_message({
+        #     "type": "notice",
+        #     "message": f"The game has started! {current_player} goes first."
+        # })
+        # self.broadcast_message({
+        #     "type": "update",
+        #     "game_state": self.get_game_state(),
+        #     "current_turn": current_player  # Send codename instead of player ID
+        # })
+
 
     def default_board(self): # Empty board for now, custom boards will be used in GUI
         return {f"{chr(65 + row)}{col + 1}": "empty" for row in range(10) for col in range(10)}
