@@ -13,6 +13,8 @@ class Server:
         self.turn_order = []
         self.current_turn = 0
         self.ready_players = set()
+        self.board1 = []
+        self.board2 = []
         logging.basicConfig(filename='server_connections.log', level=logging.DEBUG)  # Set to DEBUG level
 
     def start_game(self):
@@ -66,6 +68,11 @@ class Server:
                     self.start_battleship() #send messgae to players saying both connected
             elif message["type"] =="board":
                 print("board sent from client ", message["message"])
+                print("Sending opponent board to the client")
+                self.send_client_message(next(pid for pid in self.clients if pid != player_id), {"type": "opponent board", "message": message["message"]})
+                 #this ensures the board is sent to the other PID
+                
+
             elif message["type"] == "move":
                 pass
                 # if self.turn_order[self.current_turn] == player_id:
