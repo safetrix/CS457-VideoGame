@@ -1,10 +1,8 @@
-import sys
 import socket
 import selectors
 import logging
 import json
 import uuid
-import random
 
 class Server:
     def __init__(self):
@@ -70,46 +68,10 @@ class Server:
             elif message["type"] =="board":
                 print("board sent from client ", message["message"])
                 print("Sending opponent board to the client")
-                opponent_ID = next(pid for pid in self.clients if pid != player_id)
-                print(opponent_ID)
-                print("clients socket ", self.clients[opponent_ID]["socket"])
-                self.send_client_message(self.clients[opponent_ID]["socket"], {"type": "opponent board", "message": message["message"]})
-                # if self.board_count == 2:
-                #     self.broadcast_message({"type": "boards sent"}) #was trying to stop the clients from placing before both boards were sent cant get to work quite yet
-
+                self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "opponent board", "message": message["message"]})
                  #this ensures the board is sent to the other PID
-            
-
-
             elif message["type"] == "move":
                 pass
-                # if self.turn_order[self.current_turn] == player_id:
-                #     opponent_id = self.turn_order[(self.current_turn + 1) % 2]
-                #     move = message["move"]
-                #     if self.valid_move(move, opponent_id):
-                #         if self.clients[opponent_id]["board"][move] == "empty":
-                #             result = "miss"
-                #         else:
-                #             result = "hit"
-                #         self.clients[opponent_id]["board"][move] = result
-                #         self.clients[opponent_id]["moves"].append(move)
-
-
-                #WE NOW DO NOT NEED THIS LOGIC AS IT WILL HANDLE IN THE GUI 
-                    # self.send_client_message(sock, {"type": "move_result", "move": move, "result": result})  # Send move result to client which will go to the other player
-
-                        # Check for win condition
-                        # if self.check_win_condition(opponent_id):
-                        #     self.broadcast_message({"type": "notice", "message": f"{self.clients[player_id]['codename']} wins!"})
-                        #     self.reset_game()
-                        # else:
-                        #     self.current_turn = (self.current_turn + 1) % len(self.turn_order)
-                        #     current_player = self.clients[self.turn_order[self.current_turn]]["codename"]
-                        #     self.broadcast_message({"type": "update", "game_state": self.get_game_state(), "current_turn": current_player})  # Send codename instead of player ID
-                    # else:
-                    #     self.send_client_message(sock, {"type": "error", "message": "Invalid move!"})
-                # else:
-                #     self.send_client_message(sock, {"type": "error", "message": "It's not your turn!"})
             elif message["type"] == "chat":
                 self.broadcast_message({"type": "chat", "message": message["message"], "codename": self.clients[player_id]["codename"]})
             elif message["type"] == "check_board":
@@ -123,10 +85,6 @@ class Server:
                 self.disconnect_client(sock, player_id)
         except Exception as e:
             logging.error(f"Error processing message: {e}")
-
-
-
-
 
     def check_win_condition(self, opponent_id):
         # Implement win condition check here once GUI is implemented

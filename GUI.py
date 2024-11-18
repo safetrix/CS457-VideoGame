@@ -17,14 +17,14 @@ class GUI:
         self.screen_height = self.main_window.winfo_screenheight()
 
         # Initialize components
-        self.popup = None
         self.start_button = None
         self.quit_button = None
         self.options_label = None
         self.menu = None
         self.confirmation_label = None
         self.player1_grid = None
-        self.player2_grid = None
+        self.hits = {}
+        self.opponent_board = {}
         self.frame = None
         self.chat_window = None
         self.chat_display = None
@@ -37,8 +37,7 @@ class GUI:
         self.sock = None
         self.server_conn_message = None
         self.thread = None
-        self.condition_met = False
-        self.opponent_board = None
+        
         # Ship size and max # of that ship type
         self.ships_info = {
             "Carrier": {"size": 5, "max": 1, "count": 0}, 
@@ -73,6 +72,9 @@ class GUI:
         # Ready up button
         self.ready_button = tk.Button(main_window, text="Ready Up", state=tk.DISABLED, command=self.on_ready_up)
 
+        self.attack_button = tk.Button(main_window, text="Attack!", state=tk.DISABLED, command=self.attack)
+        self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 8 * 30)
+
         self.hide_buttons()
 
         self.canvas = tk.Canvas(main_window, width=self.canvas_width, height=self.canvas_height) 
@@ -88,7 +90,7 @@ class GUI:
 
 
     def initialize_ui(self):
-        # Start Game button
+    # Start Game button
         self.start_button = tk.Button(self.main_window, text="Start Game", font=("Helvetica", 24), width=10, height=2, relief="solid", padx=10, pady=5, command=self.open_name_window)
         self.start_button.place(relx=0.5, rely=0.5, anchor="center")
 
@@ -107,6 +109,11 @@ class GUI:
 
         # Bind menu to options label click
         self.options_label.bind("<Button-1>", self.menu_show)
+
+        # Current Turn label (initially hidden)
+        self.current_turn_label = tk.Label(self.main_window, text="", font=("Helvetica", 18))
+
+
 
     def getSock(self):
         return self.sock
@@ -205,7 +212,7 @@ class GUI:
     def player_grids(self):
         print("showing grids")
         self.player1_grid = self.create_grid()
-        self.player2_grid = self.create_grid()
+        # self.player2_grid = self.create_grid()
 
 
     def highlight_cell(self, event): 
@@ -281,7 +288,7 @@ class GUI:
                             button.config(state=tk.DISABLED) # Ship placed, reset the selection 
                 # reset selection once ship is placed
                 self.ship_to_place = None
-        self.update_button_state()
+        self.update_ready_state()
     
     def clear_board(self):
         # Reset board and ship counts
@@ -309,6 +316,7 @@ class GUI:
             button.place_forget()
         self.clear_button.place_forget()
         self.ready_button.place_forget()
+        self.attack_button.place_forget()
         print("Hiding ship buttons")
 
     def show_buttons(self):
@@ -316,6 +324,7 @@ class GUI:
             button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + i * 30)
         self.clear_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 6 * 30)
         self.ready_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 7 * 30)
+        self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 8 * 30)
         print("Showing ship buttons")
     # Messaging Functionality
 
@@ -394,44 +403,50 @@ class GUI:
                 return False
         return True
     
-    
     def on_ready_up(self):
-        # self.popup = tk.Toplevel(self.main_window)
-        # self.popup.title("Waiting")
-        # tk.Label(self.popup, text="Waiting until other player submits their board").pack(padx=20, pady=20)
-        #self.popup.transient(self.main_window)  # Make it appear on top
-        #self.popup.grab_set()  # Freeze main window
+        # Save current board layout
         self.saved_board = self.placed_cells.copy()
         print("Board saved")
         self.clear_board()
         self.create_small_grid()
-
-        # Update ready button to attack button
-        self.ready_button.config(text="Attack")
-        self.ready_button.config(command=self.attack)
         self.canvas.bind("<Motion>", self.highlight_attack_cell)
         self.canvas.bind("<Button-1>", self.attack_cell)
-        json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
-        print("board that is being sent", json_compatible_dict)
-        self.send_client_message({"type": "board", "message": json_compatible_dict})
-    def check_condition(self, popup):
-        if self.condition_met:
-            self.popup.destroy()  # Close the popup
-        else:
-            # Keep checking every 100ms
-            self.popup.after(100, self.check_condition, popup) # Check again after 100ms
-
-    def highlight_attack_cell(self, event): 
-        col = event.x // 50 
-        row = event.y // 50 
+        self.opponent_board_label = tk.Label(self.main_window, text="Opponent's Board", font=("Helvetica", 18)) 
+        self.opponent_board_label.place(x=self.canvas_x + (self.canvas_width / 2), y=self.canvas_y - 30, anchor="center")
         
-        for (x, y), cell in self.cells.items(): 
-            if (x, y) in self.saved_board: self.canvas.itemconfig(cell, fill="green") 
-            elif self.canvas.itemcget(cell, 'fill') == 'yellow': self.canvas.itemconfig(cell, fill="yellow") 
-            elif self.canvas.itemcget(cell, 'fill') == 'red': self.canvas.itemconfig(cell, fill="red") 
-            else: self.canvas.itemconfig(cell, fill="light blue")
-              
-            if 0 <= col < 10 and 0 <= row < 10: self.canvas.itemconfig(self.cells[(row, col)], fill="red")
+        print("board that is being sent", self.saved_board)
+        json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
+        print(json_compatible_dict)
+        self.send_client_message({"type": "board", "message": json_compatible_dict})
+
+        self.hide_buttons()
+        self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 7 * 30)
+        
+    def highlight_attack_cell(self, event):
+        col = event.x // 50
+        row = event.y // 50
+
+        for x in range(10):
+            for y in range(10):
+                coordinate = (x, y)
+                if coordinate in self.hits:
+                    if self.hits[coordinate] == 'Hit':
+                        self.canvas.itemconfig(self.cells[(x, y)], fill="red")
+                    elif self.hits[coordinate] == 'Miss':
+                        self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
+                else:
+                    self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
+
+        if 0 <= col < 10 and 0 <= row < 10:
+            coordinate = (row, col)
+            if coordinate not in self.hits and self.turn == 1:
+                self.selected_cell = coordinate
+                self.canvas.itemconfig(self.cells[coordinate], fill="red")
+                self.attack_button.config(state=tk.NORMAL)
+            else:
+                self.attack_button.config(state=tk.DISABLED)
+
+
 
     
     def create_small_grid(self):
@@ -450,8 +465,10 @@ class GUI:
                 cell = small_canvas.create_rectangle(x1, y1, x2, y2, fill="light blue")
                 if(row, col) in self.saved_board:
                     small_canvas.itemconfig(cell, fill="green")
+        self.player_board_label = tk.Label(self.main_window, text="Your Board", font=("Helvetica", 18)) 
+        self.player_board_label.place(x=small_canvas_x + (small_canvas_width / 2), y=self.canvas_y - 30, anchor="center")
     
-    def update_button_state(self):
+    def update_ready_state(self):
         all_placed = all(info["count"] == info["max"] for info in self.ships_info.values()) 
         if all_placed: self.ready_button.config(state=tk.NORMAL) 
         else: self.ready_button.config(state=tk.DISABLED)
@@ -459,29 +476,24 @@ class GUI:
     def attack_cell(self, event):
         col = event.x // 50
         row = event.y // 50
-        print(f"{self.name} fired a shot at ({row}, {col})")
+        if self.selected_cell:
+            for x in range(10):
+                for y in range(10):
+                    coordinate = (x, y)
+                    if coordinate in self.hits:
+                        if self.hits[coordinate] == 'Hit':
+                            self.canvas.itemconfig(self.cells[(x, y)], fill="red")
+                        elif self.hits[coordinate] == 'Miss':
+                            self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
+                    else:
+                        self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
 
-        if self.turn == 1:
-            if (row, col) in self.saved_board:
-                self.canvas.itemconfig(self.cells[(row, col)], fill="red")
-                print(f"{self.name}'s {self.saved_board[(row, col)]} was HIT!")
-                self.check_ship_sunk(row, col, self.saved_board)
-            else:
-                self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
-                print("MISS!")
-            
-            self.turn = 2
-        
-        elif self.turn == 2:
-            if (row, col) in self.saved_board:
-                self.canvas.itemconfig(self.cells[(row, col)], fill="red")
-                print(f"{self.name}'s {self.saved_board[(row, col)]} was HIT!")
-                self.check_ship_sunk(row, col, self.saved_board)
-            else:
-                self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
-                print("MISS!")
-            
-            self.turn = 1
+            # Highlight the newly selected cell
+            if 0 <= col < 10 and 0 <= row < 10:
+                coordinate = (row, col)
+                if coordinate == self.selected_cell:
+                    self.canvas.itemconfig(self.cells[coordinate], fill="red")
+
     
     def check_ship_sunk(self, row, col, board):
         ship_type = board[(row, col)]
@@ -493,10 +505,37 @@ class GUI:
             print(f"{self.name}'s {ship_type} was sunk!")
     
     def attack(self):
-        if (self.turn == 1):
-            print(f"{self.name} is attacking")
+        if self.selected_cell:
+            row, col = self.selected_cell
+            if (row, col) in self.opponent_board:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="red")
+                self.hits[(row, col)] = 'Hit'
+                print(f"{self.name}'s attack at ({row}, {col}) was a HIT!")
+                self.check_ship_sunk(row, col, self.opponent_board)
+            else:
+                self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
+                self.hits[(row, col)] = 'Miss'
+                print(f"{self.name}'s attack at ({row}, {col}) was a MISS!")
+            
+            # Disable attack button, change turn, and update label
+            self.attack_button.config(state=tk.DISABLED)
+            self.turn = 2  # Change to opponent's turn
+            self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
+            self.selected_cell = None  # Reset selected cell
+            self.main_window.after(3000, self.update_attack_state)  # Simulate turn change delay
+    
+    def update_attack_state(self):
+        if self.turn == 1:
+            self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
+            self.canvas.bind("<Motion>", self.highlight_attack_cell)
+            self.canvas.bind("<Button-1>", self.attack_cell)
         else:
-            print("It is not your turn!")
+            self.current_turn_label.config(text="")
+            self.canvas.unbind("<Motion>")
+            self.canvas.unbind("<Button-1>")
+
+
+
 
     def listen_to_server(self):
         print("Listening to server")
@@ -513,30 +552,49 @@ class GUI:
                     break
             except Exception as e:
                 logging.error("Error receiving server message:", e)
+            if self.turn == 2:
+                self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
+                self.turn = 1
+
 
     def handle_server_message(self, message):
         try:
             logging.info(f"Message received from server: {message}")
 
             if message["type"] == "notice":
-                if message["message"] == "Please Create your board": #send board creation to players
+                if message["message"] == "Please Create your board":
                     self.confirmation_label.place_forget()
                     self.show_buttons()
                     self.player_grids()
-            # if message["type"] == "boards sent":
-            #      print("BOARDS READY")
-            #      self.condition_met = True
-            #      self.check_condition(self.popup)
-            if message["type"] == "chat":
+                    
+            elif message["type"] == "chat":
                 print(f"Chat message from {message['codename']}: {message['message']}")
-            if message["type"] == "opponent board":
-                self.opponent_board = message['message']
-                print("Opponent board recieved: ", self.opponent_board)
-            
+            elif message["type"] == "opponent board":
+                print("Opponent board received from server", message["message"])
+                self.opponent_board = {eval(key): value for key, value in message["message"].items()}
+            elif message["type"] == "turn":
+                self.turn = message["message"]
+                self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
             logging.error("Error handling message:", e)
+    
+    def check_win_condition(self):
+        opponent_ships = set(self.opponent_board.values())
+        if not opponent_ships:
+            print(f"{self.name} wins!")
+            self.current_turn_label.config(text=f"{self.name} wins!")
+            self.end_game()
+    
+    def end_game(self):
+        self.canvas.unbind("<Motion>")
+        self.canvas.unbind("<Button-1>")
+        self.attack_button.config(state=tk.DISABLED)
+        self.ready_button.config(state=tk.DISABLED)
+
+
+
         
 # Create the main application window
 # Create an instance of the GUI class

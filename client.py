@@ -1,4 +1,3 @@
-import socket
 import logging
 import json
 import threading
