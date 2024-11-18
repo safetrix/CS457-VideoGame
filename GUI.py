@@ -404,7 +404,9 @@ class GUI:
         self.canvas.bind("<Motion>", self.highlight_attack_cell)
         self.canvas.bind("<Button-1>", self.attack_cell)
         print("board that is being sent", self.saved_board)
-        self.send_client_message({"type": "board", "message": self.saved_board})
+        json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
+        print(json_compatible_dict)
+        self.send_client_message({"type": "board", "message": json_compatible_dict})
     
     def highlight_attack_cell(self, event): 
         col = event.x // 50 
