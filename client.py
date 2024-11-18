@@ -1,7 +1,5 @@
-import socket
 import logging
 import json
-import threading
 from GUI import GUI
 import tkinter as tk
 
