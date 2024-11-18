@@ -407,7 +407,7 @@ class GUI:
         json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
         print(json_compatible_dict)
         self.send_client_message({"type": "board", "message": json_compatible_dict})
-    
+
     def highlight_attack_cell(self, event): 
         col = event.x // 50 
         row = event.y // 50 
@@ -513,6 +513,8 @@ class GUI:
                     
             if message["type"] == "chat":
                 print(f"Chat message from {message['codename']}: {message['message']}")
+            if message["type"] == "opponent board": #logic to getting other player board
+                print("Opponent board recieved from server", message["message"])
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
