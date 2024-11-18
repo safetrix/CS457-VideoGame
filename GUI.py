@@ -17,6 +17,7 @@ class GUI:
         self.screen_height = self.main_window.winfo_screenheight()
 
         # Initialize components
+        self.popup = None
         self.start_button = None
         self.quit_button = None
         self.options_label = None
@@ -36,7 +37,8 @@ class GUI:
         self.sock = None
         self.server_conn_message = None
         self.thread = None
-        
+        self.condition_met = False
+        self.opponent_board = None
         # Ship size and max # of that ship type
         self.ships_info = {
             "Carrier": {"size": 5, "max": 1, "count": 0}, 
@@ -392,21 +394,32 @@ class GUI:
                 return False
         return True
     
+    
     def on_ready_up(self):
-        # Save current board layout
+        # self.popup = tk.Toplevel(self.main_window)
+        # self.popup.title("Waiting")
+        # tk.Label(self.popup, text="Waiting until other player submits their board").pack(padx=20, pady=20)
+        #self.popup.transient(self.main_window)  # Make it appear on top
+        #self.popup.grab_set()  # Freeze main window
         self.saved_board = self.placed_cells.copy()
         print("Board saved")
         self.clear_board()
         self.create_small_grid()
+
         # Update ready button to attack button
         self.ready_button.config(text="Attack")
         self.ready_button.config(command=self.attack)
         self.canvas.bind("<Motion>", self.highlight_attack_cell)
         self.canvas.bind("<Button-1>", self.attack_cell)
-        print("board that is being sent", self.saved_board)
         json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
-        print(json_compatible_dict)
+        print("board that is being sent", json_compatible_dict)
         self.send_client_message({"type": "board", "message": json_compatible_dict})
+    def check_condition(self, popup):
+        if self.condition_met:
+            self.popup.destroy()  # Close the popup
+        else:
+            # Keep checking every 100ms
+            self.popup.after(100, self.check_condition, popup) # Check again after 100ms
 
     def highlight_attack_cell(self, event): 
         col = event.x // 50 
@@ -510,11 +523,16 @@ class GUI:
                     self.confirmation_label.place_forget()
                     self.show_buttons()
                     self.player_grids()
-                    
+            # if message["type"] == "boards sent":
+            #      print("BOARDS READY")
+            #      self.condition_met = True
+            #      self.check_condition(self.popup)
             if message["type"] == "chat":
                 print(f"Chat message from {message['codename']}: {message['message']}")
-            if message["type"] == "opponent board": #logic to getting other player board
-                print("Opponent board recieved from server", message["message"])
+            if message["type"] == "opponent board":
+                self.opponent_board = message['message']
+                print("Opponent board recieved: ", self.opponent_board)
+            
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
