@@ -69,7 +69,8 @@ class Server:
             elif message["type"] =="board":
                 print("board sent from client ", message["message"])
                 print("Sending opponent board to the client")
-                self.send_client_message(next(pid for pid in self.clients if pid != player_id), {"type": "opponent board", "message": message["message"]})
+                print(next(pid for pid in self.clients if pid != player_id))
+                self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "opponent board", "message": message["message"]})
                  #this ensures the board is sent to the other PID
                 
 
