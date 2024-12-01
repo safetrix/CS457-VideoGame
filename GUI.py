@@ -3,6 +3,7 @@ import socket
 import logging
 import json
 import threading
+import sys
 
 
 
@@ -16,7 +17,9 @@ class GUI:
         self.screen_width = self.main_window.winfo_screenwidth()
         self.screen_height = self.main_window.winfo_screenheight()
 
+
         # Initialize components
+        self.window_closed = None 
         self.start_button = None
         self.quit_button = None
         self.options_label = None
@@ -106,7 +109,7 @@ class GUI:
         # Create menu for options
         self.menu = tk.Menu(self.main_window, tearoff=0)
         self.menu.add_command(label="Open Chat", command=self.open_chat_window)
-        self.menu.add_command(label="Quit", command=self.main_window.quit)
+        self.menu.add_command(label="Quit", command=self.quit_game)
 
         # Bind menu to options label click
         self.options_label.bind("<Button-1>", self.menu_show)
@@ -360,7 +363,7 @@ class GUI:
         minimize_button = tk.Button(self.chat_window, text="Minimize", command=minimize_chat_window)
         minimize_button.pack(side="bottom", pady=10)
     def send_message(self):
-         message = None
+        message = None
         message_recv = self.entry_field.get()
         if message_recv:
             username = self.name
@@ -605,7 +608,7 @@ class GUI:
                     self.player_grids()
                     
             elif message["type"] == "chat":
-                 print(f"Chat message {message['message']}")                
+                print(f"Chat message {message['message']}")                
                 self.messages.append(message['message'])
                 self.update_chat()
             elif message["type"] == "player_id":
@@ -664,7 +667,33 @@ class GUI:
     # Exit button to close the application
         exit_button = tk.Button(popup, text="Exit Game", command=self.main_window.quit, font=("Arial", 14))
         exit_button.pack(pady=10)
+    def quit_game(self):
+        if not self.window_closed:
+            try:
+                # Send a quit message to the server
+                self.send_client_message({"type": "quit"})
+                
+                # Close the socket connection
+                self.sock.close()
+                
+                # Destroy all widgets in the main window
+                for widget in self.main_window.winfo_children():
+                    widget.destroy()
+                
+                # Quit the Tkinter event loop
+                self.main_window.quit()
+                self.main_window.destroy()
+                
+                # Flag to prevent repeated window closure
+                self.window_closed = True
+                
+                # Force exit after quitting the Tkinter event loop
+                sys.exit()
 
+            except Exception as e:
+                logging.error(f"Error during quit: {e}")
+        else:
+            logging.info("Window is already closed.")
 
         
 # Create the main application window
