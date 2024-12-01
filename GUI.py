@@ -360,12 +360,17 @@ class GUI:
         minimize_button = tk.Button(self.chat_window, text="Minimize", command=minimize_chat_window)
         minimize_button.pack(side="bottom", pady=10)
     def send_message(self):
-        message = self.entry_field.get()
-        if message:
+         message = None
+        message_recv = self.entry_field.get()
+        if message_recv:
             username = self.name
-            self.messages.append({"user": username, "message": message})
+            message = {
+            "username": username,
+            "message": message_recv
+            }
             self.entry_field.delete(0, "end")
-            self.update_chat()
+            self.send_client_message({"type": "chat", "message": message})
+
     def update_chat(self):
 
         self.chat_display.config(state="normal")
