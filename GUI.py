@@ -3,6 +3,7 @@ import socket
 import logging
 import json
 import threading
+import sys
 
 
 
@@ -16,7 +17,9 @@ class GUI:
         self.screen_width = self.main_window.winfo_screenwidth()
         self.screen_height = self.main_window.winfo_screenheight()
 
+
         # Initialize components
+        self.window_closed = None 
         self.start_button = None
         self.quit_button = None
         self.options_label = None
@@ -106,7 +109,7 @@ class GUI:
         # Create menu for options
         self.menu = tk.Menu(self.main_window, tearoff=0)
         self.menu.add_command(label="Open Chat", command=self.open_chat_window)
-        self.menu.add_command(label="Quit", command=self.main_window.quit)
+        self.menu.add_command(label="Quit", command=self.quit_game)
 
         # Bind menu to options label click
         self.options_label.bind("<Button-1>", self.menu_show)
@@ -351,7 +354,7 @@ class GUI:
         send_button = tk.Button(chat_frame, text="Send", command= self.send_message)
         send_button.pack(side="top", pady=5)
 
-        self.simulate_server_messages()
+        
 
         def minimize_chat_window():
             self.chat_window.withdraw()  # Hides the window instead of minimizing
@@ -360,12 +363,17 @@ class GUI:
         minimize_button = tk.Button(self.chat_window, text="Minimize", command=minimize_chat_window)
         minimize_button.pack(side="bottom", pady=10)
     def send_message(self):
-        message = self.entry_field.get()
-        if message:
+        message = None
+        message_recv = self.entry_field.get()
+        if message_recv:
             username = self.name
-            self.messages.append({"user": username, "message": message})
+            message = {
+            "username": username,
+            "message": message_recv
+            }
             self.entry_field.delete(0, "end")
-            self.update_chat()
+            self.send_client_message({"type": "chat", "message": message})
+
     def update_chat(self):
 
         self.chat_display.config(state="normal")
@@ -373,29 +381,12 @@ class GUI:
         self.chat_display.delete(1.0, "end")
 
         for message in reversed(self.messages):
-            self.chat_display.insert("1.0",f"{message['user']}: {message['message']}\n")
+            self.chat_display.insert("1.0",f"{message['username']}: {message['message']}\n")
         #self.chat_display.yview("1.0")
         # Disable editing so the user can't modify the messages
         self.chat_display.yview("end")
 
         self.chat_display.config(state="disabled")
-    def simulate_server_messages(self):
-        # Simulate server sending messages every few seconds
-        import random
-        import time
-
-        # This is a placeholder function to simulate receiving messages from the server
-        def receive_message_from_server():
-            # Simulate a new message from the server (could be replaced with actual server logic)
-            new_message = f"Server message {random.randint(1, 100)}"
-            username = "Server"  # Simulate server user
-            self.messages.append({"user": username, "message": new_message})
-            self.update_chat()
-
-            # Call this function again after a short delay to simulate continuous updates
-            self.chat_window.after(3000, receive_message_from_server)  # Update every 3 seconds
-
-        receive_message_from_server()
     
     # Ready Up Functionality
     def check_ship_placed(self):
@@ -540,7 +531,9 @@ class GUI:
                     self.player_grids()
                     
             elif message["type"] == "chat":
-                print(f"Chat message from {message['codename']}: {message['message']}")
+                print(f"Chat message {message['message']}")                
+                self.messages.append(message['message'])
+                self.update_chat()
             elif message["type"] == "player_id":
                 self.player_id = message['message']
                 print(f'Assigned player id for session is {self.player_id}')
@@ -574,8 +567,58 @@ class GUI:
         self.attack_button.config(state=tk.DISABLED)
         self.ready_button.config(state=tk.DISABLED)
 
+    def game_over(self):
+        for widget in self.main_window.winfo_children():
+            widget.destroy()  # Remove all existing widgets.
 
+    # Display Game Over message
+        popup = tk.Toplevel(self.main_window)
+        popup.title("Game Over")
+        popup.geometry("300x150")
+        popup.resizable(False, False)
+        popup.transient(self.main_window)  # Keep the pop-up on top of the main window.
+        popup.grab_set()  # Make the pop-up modal (disables interactions with the main window).
+        screen_width = popup.winfo_screenwidth()
+        screen_height = popup.winfo_screenheight()
+        popup_width = 300
+        popup_height = 150
+        x = (screen_width // 2) - (popup_width // 2)
+        y = (screen_height // 2) - (popup_height // 2)
+        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+    # Game Over message
+        message = tk.Label(popup, text="GAME OVER", font=("Arial", 18), fg="red")
+        message.pack(pady=20, )
 
+    # Exit button to close the application
+        exit_button = tk.Button(popup, text="Exit Game", command=self.main_window.quit, font=("Arial", 14))
+        exit_button.pack(pady=10)
+    def quit_game(self):
+        if not self.window_closed:
+            try:
+                # Send a quit message to the server
+                self.send_client_message({"type": "quit"})
+                
+                # Close the socket connection
+                self.sock.close()
+                
+                # Destroy all widgets in the main window
+                for widget in self.main_window.winfo_children():
+                    widget.destroy()
+                
+                # Quit the Tkinter event loop
+                self.main_window.quit()
+                self.main_window.destroy()
+                
+                # Flag to prevent repeated window closure
+                self.window_closed = True
+                
+                # Force exit after quitting the Tkinter event loop
+                sys.exit()
+
+            except Exception as e:
+                logging.error(f"Error during quit: {e}")
+        else:
+            logging.info("Window is already closed.")
 
         
 # Create the main application window
