@@ -26,7 +26,7 @@ class GUI:
         self.menu = None
         self.confirmation_label = None
         self.player1_grid = None
-        self.hits = {}
+        self.attack_history = {}
         self.opponent_board = {}
         self.frame = None
         self.chat_window = None
@@ -78,7 +78,7 @@ class GUI:
         # Ready up button
         self.ready_button = tk.Button(main_window, text="Ready Up", state=tk.DISABLED, command=self.on_ready_up)
 
-        self.attack_button = tk.Button(main_window, text="Attack!", state=tk.DISABLED, command=self.attack)
+        self.attack_button = tk.Button(main_window, text="Attack!", state=tk.DISABLED, command=self.on_attack)
         self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 8 * 30)
 
         self.hide_buttons()
@@ -401,8 +401,6 @@ class GUI:
         print("Board saved")
         self.clear_board()
         self.create_small_grid()
-        self.canvas.bind("<Motion>", self.highlight_attack_cell)
-        self.canvas.bind("<Button-1>", self.attack_cell)
         self.opponent_board_label = tk.Label(self.main_window, text="Opponent's Board", font=("Helvetica", 18)) 
         self.opponent_board_label.place(x=self.canvas_x + (self.canvas_width / 2), y=self.canvas_y - 30, anchor="center")
         
@@ -413,6 +411,14 @@ class GUI:
 
         self.hide_buttons()
         self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 7 * 30)
+        if self.player_id == self.player_order[self.current_turn_index]:
+            self.attack_button.config(state=tk.NORMAL)
+        else:
+            self.attack_button.config(state=tk.DISABLED)
+    
+    def on_attack(self):
+        self.canvas.bind("<Motion>", self.highlight_attack_cell)
+        self.canvas.bind("<Button-1>", self.attack_cell)
         
     def highlight_attack_cell(self, event):
         col = event.x // 50
@@ -421,22 +427,18 @@ class GUI:
         for x in range(10):
             for y in range(10):
                 coordinate = (x, y)
-                if coordinate in self.hits:
-                    if self.hits[coordinate] == 'Hit':
+                if coordinate in self.attack_history:
+                    if self.attack_history[coordinate] == 'Hit':
                         self.canvas.itemconfig(self.cells[(x, y)], fill="red")
-                    elif self.hits[coordinate] == 'Miss':
+                    elif self.attack_history[coordinate] == 'Miss':
                         self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
                 else:
                     self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
 
         if 0 <= col < 10 and 0 <= row < 10:
             coordinate = (row, col)
-            if coordinate not in self.hits:
-                self.selected_cell = coordinate
+            if coordinate not in self.attack_history:
                 self.canvas.itemconfig(self.cells[coordinate], fill="red")
-                self.attack_button.config(state=tk.NORMAL)
-            else:
-                self.attack_button.config(state=tk.DISABLED)
 
 
 
@@ -468,111 +470,32 @@ class GUI:
     def attack_cell(self, event):
         col = event.x // 50
         row = event.y // 50
-        print(f"Firing missile at cell ({row}, {col})")
         if self.player_id == self.player_order[self.current_turn_index]:
-            size = self.ships_info[self.ship_to_place]["size"]
-            can_place = True
-
-            if self.ship_orientation == "horizontal":
-                if col + size <= 10:
-                    for i in range(size):
-                        if (row, col+i) in self.placed_cells:
-                            can_place = False
-                            break
-                else:
-                    can_place = False
-
-                    # placed = True
-            else:
-                if row + size <= 10:
-                    for i in range(size):
-                        if (row + i, col) in self.placed_cells:
-                            can_place = False
-                            break
-                else:
-                    can_place = False
-                        #placed = True
-            
-            if can_place:
-                if self.ship_orientation == 'horizontal':
-                    for i in range(size):
-                        self.canvas.itemconfig(self.cells[(row, col + i)], fill="green")
-                        self.placed_cells[(row, col + i)] = self.ship_to_place
-                else:
-                    for i in range(size):
-                        self.canvas.itemconfig(self.cells[(row + i, col)], fill="green")
-                        self.placed_cells[(row + i, col)] = self.ship_to_place
-
-                self.ships_info[self.ship_to_place]["count"] += 1
-
-                # Disable button when max # of ship type placed
-                if self.ships_info[self.ship_to_place]["count"] == self.ships_info[self.ship_to_place]["max"]:
-                    for button in self.ship_buttons: 
-                        if button.cget("text").startswith(self.ship_to_place): 
-                            button.config(state=tk.DISABLED) # Ship placed, reset the selection 
-                # reset selection once ship is placed
-                self.ship_to_place = None
-        self.update_ready_state()
-
-        # col = event.x // 50
-        # row = event.y // 50
-        # if self.selected_cell:
-        #     for x in range(10):
-        #         for y in range(10):
-        #             coordinate = (x, y)
-        #             if coordinate in self.hits:
-        #                 if self.hits[coordinate] == 'Hit':
-        #                     self.canvas.itemconfig(self.cells[(x, y)], fill="red")
-        #                 elif self.hits[coordinate] == 'Miss':
-        #                     self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
-        #             else:
-        #                 self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
-
-        #     # Highlight the newly selected cell
-        #     if 0 <= col < 10 and 0 <= row < 10:
-        #         coordinate = (row, col)
-        #         if coordinate == self.selected_cell:
-        #             self.canvas.itemconfig(self.cells[coordinate], fill="red")
-
-    
-    def check_ship_sunk(self, row, col, board):
-        ship_type = board[(row, col)]
-        sunk = all(
-            pos not in board or board [pos] != ship_type
-            for pos in board
-        )
-        if sunk:
-            print(f"{self.name}'s {ship_type} was sunk!")
-    
-    def attack(self):
-        if self.selected_cell:
-            row, col = self.selected_cell
+            can_place  = True
+            if (row, col) in self.attack_history:
+                can_place = False
+        if can_place:
+            print(f"Firing missile at cell ({row}, {col})")
             if (row, col) in self.opponent_board:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="red")
-                self.hits[(row, col)] = 'Hit'
-                print(f"{self.name}'s attack at ({row}, {col}) was a HIT!")
-                self.check_ship_sunk(row, col, self.opponent_board)
+                self.attack_history[(row, col)] = 'Hit'
+                print(f"{self.name}'s attack at ({row}, {col}) was a ... HIT!")
+                
             else:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
-                self.hits[(row, col)] = 'Miss'
-                print(f"{self.name}'s attack at ({row}, {col}) was a MISS!")
-            
-            # Disable attack button, change turn, and update label
-            self.attack_button.config(state=tk.DISABLED)
-            self.send_client_message({"type": "update_turn"})  # Change to opponent's turn
-            self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s turn")
-            self.selected_cell = None  # Reset selected cell
-            self.main_window.after(3000, self.update_attack_state)  # Simulate turn change delay
+                self.attack_history[(row, col)] = 'Miss'
+                print(f"{self.name}'s attack at ({row}, {col}) was a ... MISS!")
+        self.update_attack_state()
+    
+    def check_ship_sunk():
+        pass
     
     def update_attack_state(self):
         if self.player_id == self.player_order[self.current_turn_index]:
-            self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
-            self.canvas.bind("<Motion>", self.highlight_attack_cell)
-            self.canvas.bind("<Button-1>", self.attack_cell)
-        else:
-            self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
+            #self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
+            self.attack_button.config(state=tk.DISABLED)
             self.canvas.unbind("<Motion>")
-            self.canvas.unbind("<Button-1>")
+            self.send_client_message({"type": "update_turn"})
 
 
 
@@ -624,6 +547,8 @@ class GUI:
                 self.current_turn_index = message["message"]
                 print(f"Turn changed: {self.player_order[self.current_turn_index]}'s turn")
                 self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
+                if self.player_id == self.player_order[self.current_turn_index]:
+                    self.attack_button.config(state=tk.NORMAL)
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
