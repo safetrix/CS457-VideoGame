@@ -79,7 +79,7 @@ class Server:
             elif message["type"] == "move":
                 pass
             elif message["type"] == "chat":
-                self.broadcast_message({"type": "chat", "message": message["message"]})self.broadcast_message({"type": "chat", "message": message["message"]})
+                 self.broadcast_message({"type": "chat", "message": message["message"], "codename": self.clients[player_id]["codename"]})
             elif message["type"] == "check_board":
                 self.send_client_message(sock, {
                     "type": "board_status", 
@@ -89,6 +89,7 @@ class Server:
                 })
             elif message["type"] == "quit":
                 self.disconnect_client(sock, player_id)
+                self.ready_players  -= 1
             elif message["type"] == "update_turn":
                 if(self.current_turn_index + 1) < len(self.player_order):
                     self.current_turn_index = self.current_turn_index + 1
