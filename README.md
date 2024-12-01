@@ -17,4 +17,4 @@ This is going to be a simple implementation of the classic battleship game
 
 **Additional resources:**
 * [[Link to Python documentation](https://docs.python.org/3/library/tk.html)]
-* [Link to sockets tutorial(https://docs.python.org/3/howto/sockets.html)]
+* [Link to sockets tutorial](https://docs.python.org/3/howto/sockets.html)]
