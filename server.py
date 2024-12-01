@@ -3,17 +3,20 @@ import selectors
 import logging
 import json
 import uuid
+import random
 
 class Server:
     def __init__(self):
         self.selector = selectors.DefaultSelector()
         self.clients = {}
-        self.turn_order = []
-        self.current_turn = 0
         self.ready_players = set()
         self.board1 = []
         self.board2 = []
         self.board_count = None
+
+        self.player_order = []
+        self.current_turn_index = 0
+
         logging.basicConfig(filename='server_connections.log', level=logging.DEBUG)  # Set to DEBUG level
 
     def start_game(self):
@@ -40,6 +43,9 @@ class Server:
         player_id = str(uuid.uuid4())
         self.selector.register(client_socket, selectors.EVENT_READ, data=player_id)
         self.clients[player_id] = {"socket": client_socket, "state": "connected", "addr": addr, "codename": None, "ready": False, "board": self.default_board(), "moves": [], "sank_ships": []}
+        self.player_order.append(player_id)
+
+        self.send_client_message(client_socket, {"type": "player_id", "message": player_id})
 
     def service_connection(self, key, mask):
         sock = key.fileobj
@@ -83,6 +89,16 @@ class Server:
                 })
             elif message["type"] == "quit":
                 self.disconnect_client(sock, player_id)
+            elif message["type"] == "update_turn":
+                if(self.current_turn_index + 1) < len(self.player_order):
+                    self.current_turn_index = self.current_turn_index + 1
+                else:
+                    self.current_turn_index = 0
+                for client_id in self.clients:
+                    self.send_client_message(self.clients[client_id]["socket"], {
+                "type": "turn",
+                "message": self.current_turn_index
+            })
         except Exception as e:
             logging.error(f"Error processing message: {e}")
 
@@ -114,11 +130,12 @@ class Server:
         print(f"Disconnecting client: {player_id}")
         if player_id in self.clients:
             del self.clients[player_id]
-        if player_id in self.turn_order:
-            self.turn_order.remove(player_id)
+        if player_id in self.player_order:
+            self.player_order.remove(player_id)
         self.selector.unregister(sock)
         sock.close()
         self.broadcast_message({"type": "notice", "message": f"Player {self.clients[player_id]['codename']} left the game."})
+        self.player_order.remove(player_id)
 
     def broadcast_message(self, message, exclude=None):
         msg = json.dumps(message).encode() + b'\n'
@@ -146,6 +163,22 @@ class Server:
         self.broadcast_message({"type": "notice", "message": f"Please Create your board"})
         print("sending message to players")
 
+        if len(self.player_order) == 2:
+            random.shuffle(self.player_order)
+            self.current_turn_index = 0
+            current_player = self.player_order[self.current_turn_index]
+            print(f"Game has started. {current_player} goes first.")
+
+            for client_id in self.clients:
+                    self.send_client_message(self.clients[client_id]["socket"], {
+                "type": "player_order",
+                "message": self.player_order
+            })
+            
+        
+
+        
+
         # self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
         # random.shuffle(self.turn_order)  # Shuffle to select who starts first
         # self.current_turn = 0
@@ -169,7 +202,7 @@ class Server:
         return move in self.clients[opponent_id]["board"]
 
     def get_game_state(self):
-        return {pid: {"board": self.clients[pid]["board"], "moves": self.clients[pid]["moves"], "sank_ships": self.clients[pid]["sank_ships"]} for pid in self.turn_order}
+        return {pid: {"board": self.clients[pid]["board"], "moves": self.clients[pid]["moves"], "sank_ships": self.clients[pid]["sank_ships"]} for pid in self.player_order}
 
 if __name__ == "__main__":
     server = Server()
