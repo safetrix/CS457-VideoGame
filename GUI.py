@@ -649,6 +649,31 @@ class GUI:
         self.attack_button.config(state=tk.DISABLED)
         self.ready_button.config(state=tk.DISABLED)
 
+    def game_over(self):
+        for widget in self.main_window.winfo_children():
+            widget.destroy()  # Remove all existing widgets.
+
+    # Display Game Over message
+        popup = tk.Toplevel(self.main_window)
+        popup.title("Game Over")
+        popup.geometry("300x150")
+        popup.resizable(False, False)
+        popup.transient(self.main_window)  # Keep the pop-up on top of the main window.
+        popup.grab_set()  # Make the pop-up modal (disables interactions with the main window).
+        screen_width = popup.winfo_screenwidth()
+        screen_height = popup.winfo_screenheight()
+        popup_width = 300
+        popup_height = 150
+        x = (screen_width // 2) - (popup_width // 2)
+        y = (screen_height // 2) - (popup_height // 2)
+        popup.geometry(f"{popup_width}x{popup_height}+{x}+{y}")
+    # Game Over message
+        message = tk.Label(popup, text="GAME OVER", font=("Arial", 18), fg="red")
+        message.pack(pady=20, )
+
+    # Exit button to close the application
+        exit_button = tk.Button(popup, text="Exit Game", command=self.main_window.quit, font=("Arial", 14))
+        exit_button.pack(pady=10)
 
 
         
