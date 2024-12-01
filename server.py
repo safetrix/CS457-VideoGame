@@ -79,7 +79,7 @@ class Server:
             elif message["type"] == "move":
                 pass
             elif message["type"] == "chat":
-                self.broadcast_message({"type": "chat", "message": message["message"], "codename": self.clients[player_id]["codename"]})
+                self.broadcast_message({"type": "chat", "message": message["message"]})self.broadcast_message({"type": "chat", "message": message["message"]})
             elif message["type"] == "check_board":
                 self.send_client_message(sock, {
                     "type": "board_status", 
