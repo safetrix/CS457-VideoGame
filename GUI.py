@@ -503,6 +503,7 @@ class GUI:
         if self.player_id == self.player_order[self.current_turn_index]:
             #self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
             self.attack_button.config(state=tk.DISABLED)
+            self.canvas.unbind("<Motion>")
             self.send_client_message({"type": "update_turn"})
 
 
