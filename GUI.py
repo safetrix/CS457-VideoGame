@@ -605,7 +605,9 @@ class GUI:
                     self.player_grids()
                     
             elif message["type"] == "chat":
-                print(f"Chat message from {message['codename']}: {message['message']}")
+                 print(f"Chat message {message['message']}")                
+                self.messages.append(message['message'])
+                self.update_chat()
             elif message["type"] == "player_id":
                 self.player_id = message['message']
                 print(f'Assigned player id for session is {self.player_id}')
