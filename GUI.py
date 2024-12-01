@@ -351,7 +351,7 @@ class GUI:
         send_button = tk.Button(chat_frame, text="Send", command= self.send_message)
         send_button.pack(side="top", pady=5)
 
-        self.simulate_server_messages()
+        
 
         def minimize_chat_window():
             self.chat_window.withdraw()  # Hides the window instead of minimizing
@@ -378,29 +378,12 @@ class GUI:
         self.chat_display.delete(1.0, "end")
 
         for message in reversed(self.messages):
-            self.chat_display.insert("1.0",f"{message['user']}: {message['message']}\n")
+            self.chat_display.insert("1.0",f"{message['username']}: {message['message']}\n")
         #self.chat_display.yview("1.0")
         # Disable editing so the user can't modify the messages
         self.chat_display.yview("end")
 
         self.chat_display.config(state="disabled")
-    def simulate_server_messages(self):
-        # Simulate server sending messages every few seconds
-        import random
-        import time
-
-        # This is a placeholder function to simulate receiving messages from the server
-        def receive_message_from_server():
-            # Simulate a new message from the server (could be replaced with actual server logic)
-            new_message = f"Server message {random.randint(1, 100)}"
-            username = "Server"  # Simulate server user
-            self.messages.append({"user": username, "message": new_message})
-            self.update_chat()
-
-            # Call this function again after a short delay to simulate continuous updates
-            self.chat_window.after(3000, receive_message_from_server)  # Update every 3 seconds
-
-        receive_message_from_server()
     
     # Ready Up Functionality
     def check_ship_placed(self):
