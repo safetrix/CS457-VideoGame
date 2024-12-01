@@ -115,7 +115,7 @@ class GUI:
         self.options_label.bind("<Button-1>", self.menu_show)
 
         # Current Turn label (initially hidden)
-        self.current_turn_label = tk.Label(self.main_window, text="", font=("Helvetica", 18))
+        self.current_turn_label = tk.Label(self.main_window, text="", font=("Helvetica", 24))
 
 
 
@@ -403,6 +403,12 @@ class GUI:
         self.create_small_grid()
         self.opponent_board_label = tk.Label(self.main_window, text="Opponent's Board", font=("Helvetica", 18)) 
         self.opponent_board_label.place(x=self.canvas_x + (self.canvas_width / 2), y=self.canvas_y - 30, anchor="center")
+        if self.player_id == self.player_order[self.current_turn_index]:
+            self.current_turn_label.config(text="Your Turn")
+        else:
+            self.current_turn_label.config(text="Opponent's Turn")
+        self.current_turn_label.place(x=self.canvas_x + (self.canvas_width / 2), y=self.canvas_y - 80, anchor="center")
+
         
         print("board that is being sent", self.saved_board)
         json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
@@ -496,6 +502,7 @@ class GUI:
             self.attack_button.config(state=tk.DISABLED)
             self.canvas.unbind("<Motion>")
             self.send_client_message({"type": "update_turn"})
+            
 
 
 
@@ -549,6 +556,9 @@ class GUI:
                 self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
                 if self.player_id == self.player_order[self.current_turn_index]:
                     self.attack_button.config(state=tk.NORMAL)
+                    self.current_turn_label.config(text="Your Turn")
+                else:
+                    self.current_turn_label.config(text="Opponent's Turn")
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
