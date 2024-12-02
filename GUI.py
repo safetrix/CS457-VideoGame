@@ -129,13 +129,15 @@ class GUI:
         self.server_conn_message = tk.Label(self.main_window, text=f"Connecting to server!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
 
+        print(self.host, self.port)
         addr = (self.host, self.port)
         print("Starting connection to", addr)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
+        
         logging.info(f"Connection created: {addr}")
         self.sock.connect((self.host, self.port))
         self.thread = threading.Thread(target=self.listen_to_server).start()
+        
         self.server_conn_message.place_forget()
         self.server_conn_message = tk.Label(self.main_window, text=f"Server Connected!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
