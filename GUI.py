@@ -43,6 +43,9 @@ class GUI:
         self.player_id = None
         self.current_turn_index = 0
         self.player_order = None
+        self.ships_remaining = 8
+        self.opponent_ships_remaining = 8
+        self.ships_sunk = {}
         
         # Ship size and max # of that ship type
         self.ships_info = {
@@ -129,15 +132,13 @@ class GUI:
         self.server_conn_message = tk.Label(self.main_window, text=f"Connecting to server!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
 
-        print(self.host, self.port)
         addr = (self.host, self.port)
         print("Starting connection to", addr)
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        
+
         logging.info(f"Connection created: {addr}")
         self.sock.connect((self.host, self.port))
         self.thread = threading.Thread(target=self.listen_to_server).start()
-        
         self.server_conn_message.place_forget()
         self.server_conn_message = tk.Label(self.main_window, text=f"Server Connected!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
@@ -412,7 +413,7 @@ class GUI:
         self.current_turn_label.place(x=self.canvas_x + (self.canvas_width / 2), y=self.canvas_y - 80, anchor="center")
 
         
-        print("board that is being sent", self.saved_board)
+        print("board that is being sent", self.saved_board) 
         json_compatible_dict = {str(key): value for key, value in self.saved_board.items()}
         print(json_compatible_dict)
         self.send_client_message({"type": "board", "message": json_compatible_dict})
@@ -423,34 +424,7 @@ class GUI:
             self.attack_button.config(state=tk.NORMAL)
         else:
             self.attack_button.config(state=tk.DISABLED)
-    
-    def on_attack(self):
-        self.canvas.bind("<Motion>", self.highlight_attack_cell)
-        self.canvas.bind("<Button-1>", self.attack_cell)
-        
-    def highlight_attack_cell(self, event):
-        col = event.x // 50
-        row = event.y // 50
 
-        for x in range(10):
-            for y in range(10):
-                coordinate = (x, y)
-                if coordinate in self.attack_history:
-                    if self.attack_history[coordinate] == 'Hit':
-                        self.canvas.itemconfig(self.cells[(x, y)], fill="red")
-                    elif self.attack_history[coordinate] == 'Miss':
-                        self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
-                else:
-                    self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
-
-        if 0 <= col < 10 and 0 <= row < 10:
-            coordinate = (row, col)
-            if coordinate not in self.attack_history:
-                self.canvas.itemconfig(self.cells[coordinate], fill="red")
-
-
-
-    
     def create_small_grid(self):
         small_canvas_width = 200
         small_canvas_height = 200
@@ -475,6 +449,30 @@ class GUI:
         if all_placed: self.ready_button.config(state=tk.NORMAL) 
         else: self.ready_button.config(state=tk.DISABLED)
     
+    def on_attack(self):
+        self.canvas.bind("<Motion>", self.highlight_attack_cell)
+        self.canvas.bind("<Button-1>", self.attack_cell)
+        
+    def highlight_attack_cell(self, event):
+        col = event.x // 50
+        row = event.y // 50
+
+        for x in range(10):
+            for y in range(10):
+                coordinate = (x, y)
+                if coordinate in self.attack_history:
+                    if self.attack_history[coordinate] == 'Hit':
+                        self.canvas.itemconfig(self.cells[(x, y)], fill="red")
+                    elif self.attack_history[coordinate] == 'Miss':
+                        self.canvas.itemconfig(self.cells[(x, y)], fill="yellow")
+                else:
+                    self.canvas.itemconfig(self.cells[(x, y)], fill="light blue")
+
+        if 0 <= col < 10 and 0 <= row < 10:
+            coordinate = (row, col)
+            if coordinate not in self.attack_history:
+                self.canvas.itemconfig(self.cells[coordinate], fill="red")
+    
     def attack_cell(self, event):
         col = event.x // 50
         row = event.y // 50
@@ -488,6 +486,9 @@ class GUI:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="red")
                 self.attack_history[(row, col)] = 'Hit'
                 print(f"{self.name}'s attack at ({row}, {col}) was a ... HIT!")
+                for ship in self.ships_info:
+                    self.check_ship_sunk(ship)
+
                 
             else:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
@@ -495,20 +496,31 @@ class GUI:
                 print(f"{self.name}'s attack at ({row}, {col}) was a ... MISS!")
         self.update_attack_state()
     
-    def check_ship_sunk():
-        pass
+    def ship_coordinates(self, ships, ship):
+        return [coord for coord, name in ships.items() if name == ship]
+    
+    def check_ship_sunk(self, ship):
+        coordinates = self.ship_coordinates(self.opponent_board, ship)
+        hits = 0
+        for cell in coordinates:
+            if cell in self.attack_history:
+                hits = hits + 1
+        if hits == self.ships_info[ship]["size"]:
+            if sorted(coordinates) == sorted(self.ship_coordinates(self.ships_sunk, ship)):
+                pass
+            for cell in coordinates:
+                    self.ships_sunk[cell] = [ship]
+            self.opponent_ships_remaining = self.opponent_ships_remaining - 1
+            self.send_client_message({"type": "ship_sunk"})
+        self.check_win_condition()
+
     
     def update_attack_state(self):
         if self.player_id == self.player_order[self.current_turn_index]:
-            #self.current_turn_label.config(text=f"Player {self.player_order[self.current_turn_index]}'s Turn")
             self.attack_button.config(state=tk.DISABLED)
             self.canvas.unbind("<Motion>")
             self.send_client_message({"type": "update_turn"})
             
-
-
-
-
     def listen_to_server(self):
         print("Listening to server")
         buffer = ""
@@ -524,10 +536,6 @@ class GUI:
                     break
             except Exception as e:
                 logging.error("Error receiving server message:", e)
-            # if self.turn == 2:
-            #     self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
-            #     self.turn = 1
-
 
     def handle_server_message(self, message):
         try:
@@ -561,16 +569,21 @@ class GUI:
                     self.current_turn_label.config(text="Your Turn")
                 else:
                     self.current_turn_label.config(text="Opponent's Turn")
+            elif message["type"] == "ship_sunk":
+                self.ships_remaining = self.ships_remaining - 1
+                print(f"Ship has been sunk! Ships remaining: {self.ships_remaining}")
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
             logging.error("Error handling message:", e)
     
     def check_win_condition(self):
-        opponent_ships = set(self.opponent_board.values())
-        if not opponent_ships:
+        if self.opponent_ships_remaining == 0 and self.ships_remaining > 0:
             print(f"{self.name} wins!")
             self.current_turn_label.config(text=f"{self.name} wins!")
+            self.end_game()
+        elif self.ships_remaining == 0 and self.opponent_ships_remaining > 0:
+            print("You lost!")
             self.end_game()
     
     def end_game(self):
