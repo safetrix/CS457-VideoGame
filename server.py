@@ -4,6 +4,7 @@ import logging
 import json
 import uuid
 import random
+import argparse
 
 class Server:
     def __init__(self):
@@ -19,13 +20,14 @@ class Server:
 
         logging.basicConfig(filename='server_connections.log', level=logging.DEBUG)  # Set to DEBUG level
 
-    def start_game(self):
+    def start_game(self, port):
         lsock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        lsock.bind(('127.0.0.1', 65432))
+        lsock.bind(('0.0.0.0', port))
+        print(lsock.getsockname())
         lsock.listen(5)
         lsock.setblocking(False)
         self.selector.register(lsock, selectors.EVENT_READ, data=None)
-        print("Listening on 127.0.0.1:65432")
+        print(f"Listening on 0.0.0.0:{port}")
 
         while True:
             events = self.selector.select(timeout=None)
@@ -99,11 +101,10 @@ class Server:
                     self.send_client_message(self.clients[client_id]["socket"], {
                 "type": "turn",
                 "message": self.current_turn_index
-            })
+            })      
             elif message["type"] == "ship_sunk":
                 self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "ship_sunk"})
                 print("Notifying opponent of sunk ship.")
-            
         except Exception as e:
             logging.error(f"Error processing message: {e}")
 
@@ -210,5 +211,11 @@ class Server:
         return {pid: {"board": self.clients[pid]["board"], "moves": self.clients[pid]["moves"], "sank_ships": self.clients[pid]["sank_ships"]} for pid in self.player_order}
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process some flags.")
+    parser.add_argument('-p', '--port', type=int, help='Specify the port number.')
+    args = parser.parse_args()
+
+    print("Port that is selected for server", args.port)
+
     server = Server()
-    server.start_game()
+    server.start_game(args.port)
