@@ -496,23 +496,54 @@ class GUI:
                 print(f"{self.name}'s attack at ({row}, {col}) was a ... MISS!")
         self.update_attack_state()
     
-    def ship_coordinates(self, ships, ship):
-        return [coord for coord, name in ships.items() if name == ship]
+    def ship_coordinates(self, board, ship_name):
+        ship_coords = []
+        visited = set()
+
+        for coord, name in board.items():
+            if name == ship_name and coord not in visited:
+                instance_coords = [coord]
+                visited.add(coord)
+                stack = [coord]
+                while stack:
+                    current = stack.pop()
+                    neighbors = [
+                        (current[0] + 1, current[1]),
+                        (current[0] - 1, current[1]),
+                        (current[0], current[1] + 1),
+                        (current[0], current[1] - 1)
+                    ]
+                    for neighbor in neighbors:
+                        if neighbor in board and board[neighbor] == ship_name and neighbor not in visited:
+                            stack.append(neighbor)
+                            visited.add(neighbor)
+                            instance_coords.append(neighbor)
+
+                ship_coords.append(instance_coords)
+        
+        return ship_coords
     
     def check_ship_sunk(self, ship):
-        coordinates = self.ship_coordinates(self.opponent_board, ship)
-        hits = 0
-        for cell in coordinates:
-            if cell in self.attack_history:
-                hits = hits + 1
-        if hits == self.ships_info[ship]["size"]:
-            if sorted(coordinates) == sorted(self.ship_coordinates(self.ships_sunk, ship)):
-                pass
-            for cell in coordinates:
-                    self.ships_sunk[cell] = [ship]
-            self.opponent_ships_remaining = self.opponent_ships_remaining - 1
-            self.send_client_message({"type": "ship_sunk"})
+        all_coordinates = self.ship_coordinates(self.opponent_board, ship)
+
+        for instance in all_coordinates:
+            hits = 0
+            for cell in instance:
+                if cell in self.attack_history:
+                    hits += 1
+
+            if hits == self.ships_info[ship]["size"]:
+                ship_sunk = all(cell in self.ships_sunk for cell in instance)
+                if not ship_sunk:
+                    for cell in instance:
+                        self.ships_sunk[cell] = ship
+
+                    self.opponent_ships_remaining -= 1
+
+                    self.send_client_message({"type": "ship_sunk"})
+
         self.check_win_condition()
+
 
     
     def update_attack_state(self):
@@ -582,9 +613,11 @@ class GUI:
             print(f"{self.name} wins!")
             self.current_turn_label.config(text=f"{self.name} wins!")
             self.end_game()
+            self.game_over()
         elif self.ships_remaining == 0 and self.opponent_ships_remaining > 0:
             print("You lost!")
             self.end_game()
+            self.game_over()
     
     def end_game(self):
         self.canvas.unbind("<Motion>")
