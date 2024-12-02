@@ -102,6 +102,8 @@ class Server:
                 "type": "turn",
                 "message": self.current_turn_index
             })
+            elif message["type"] == "game over":
+                self.broadcast_message({"type": "game over"})
             elif message["type"] == "ship_sunk":
                 self.broadcast_message({"type": "ship_sunk"})
                 print("Notifying opponent of sunk ship.")

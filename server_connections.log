@@ -21970,3 +21970,178 @@ ERROR:root:Error in connection attempt: [WinError 10054] An existing connection 
 ERROR:root:Error in connection attempt: [WinError 10054] An existing connection was forcibly closed by the remote host
 ERROR:root:Error in connection attempt: [WinError 10054] An existing connection was forcibly closed by the remote host
 ERROR:root:Error in connection attempt: [WinError 10054] An existing connection was forcibly closed by the remote host
+INFO:root:Connection created: <socket.socket fd=1052, family=2, type=1, proto=0, laddr=('127.0.0.10', 123), raddr=('127.0.0.1', 60101)>
+INFO:root:Message sent to client: {'type': 'player_id', 'message': '125c2465-dc06-44cb-bdca-6e852bfae2d0'}
+INFO:root:Connection created: <socket.socket fd=1040, family=2, type=1, proto=0, laddr=('127.0.0.10', 123), raddr=('127.0.0.1', 60103)>
+INFO:root:Message sent to client: {'type': 'player_id', 'message': 'b55c85cc-e1f4-4333-892b-2062dbfdacf4'}
+INFO:root:Message received from b55c85cc-e1f4-4333-892b-2062dbfdacf4: {'type': 'ready'}
+DEBUG:root:Player is ready. Ready players: 1
+INFO:root:Message received from 125c2465-dc06-44cb-bdca-6e852bfae2d0: {'type': 'ready'}
+DEBUG:root:Player is ready. Ready players: 2
+DEBUG:root:Both players are ready. Starting game...
+INFO:root:Message sent to client: {'type': 'player_order', 'message': ['125c2465-dc06-44cb-bdca-6e852bfae2d0', 'b55c85cc-e1f4-4333-892b-2062dbfdacf4']}
+INFO:root:Message sent to client: {'type': 'player_order', 'message': ['125c2465-dc06-44cb-bdca-6e852bfae2d0', 'b55c85cc-e1f4-4333-892b-2062dbfdacf4']}
+INFO:root:Message received from 125c2465-dc06-44cb-bdca-6e852bfae2d0: {'type': 'chat', 'message': {'username': 'adyn', 'message': 'yo whats up'}}
+INFO:root:Message received from b55c85cc-e1f4-4333-892b-2062dbfdacf4: {'type': 'chat', 'message': {'username': 'brice', 'message': 'hey'}}
+INFO:root:Message received from b55c85cc-e1f4-4333-892b-2062dbfdacf4: {'type': 'chat', 'message': {'username': 'brice', 'message': 'yo'}}
+INFO:root:Message received from b55c85cc-e1f4-4333-892b-2062dbfdacf4: {'type': 'board', 'message': {'(2, 0)': 'Carrier', '(3, 0)': 'Carrier', '(4, 0)': 'Carrier', '(5, 0)': 'Carrier', '(6, 0)': 'Carrier', '(2, 5)': 'Battleship', '(3, 5)': 'Battleship', '(4, 5)': 'Battleship', '(5, 5)': 'Battleship', '(1, 9)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 9)': 'Cruiser', '(2, 3)': 'Cruiser', '(3, 3)': 'Cruiser', '(4, 3)': 'Cruiser', '(5, 8)': 'Destroyer', '(6, 8)': 'Destroyer', '(6, 3)': 'Destroyer', '(7, 3)': 'Destroyer', '(0, 6)': 'Submarine', '(0, 4)': 'Submarine'}}
+INFO:root:Message sent to client: {'type': 'opponent board', 'message': {'(2, 0)': 'Carrier', '(3, 0)': 'Carrier', '(4, 0)': 'Carrier', '(5, 0)': 'Carrier', '(6, 0)': 'Carrier', '(2, 5)': 'Battleship', '(3, 5)': 'Battleship', '(4, 5)': 'Battleship', '(5, 5)': 'Battleship', '(1, 9)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 9)': 'Cruiser', '(2, 3)': 'Cruiser', '(3, 3)': 'Cruiser', '(4, 3)': 'Cruiser', '(5, 8)': 'Destroyer', '(6, 8)': 'Destroyer', '(6, 3)': 'Destroyer', '(7, 3)': 'Destroyer', '(0, 6)': 'Submarine', '(0, 4)': 'Submarine'}}
+INFO:root:Message received from 125c2465-dc06-44cb-bdca-6e852bfae2d0: {'type': 'board', 'message': {'(1, 4)': 'Carrier', '(1, 5)': 'Carrier', '(1, 6)': 'Carrier', '(1, 7)': 'Carrier', '(1, 8)': 'Carrier', '(3, 2)': 'Battleship', '(4, 2)': 'Battleship', '(5, 2)': 'Battleship', '(6, 2)': 'Battleship', '(3, 6)': 'Cruiser', '(4, 6)': 'Cruiser', '(5, 6)': 'Cruiser', '(4, 9)': 'Cruiser', '(5, 9)': 'Cruiser', '(6, 9)': 'Cruiser', '(6, 4)': 'Destroyer', '(7, 4)': 'Destroyer', '(7, 7)': 'Destroyer', '(8, 7)': 'Destroyer', '(8, 9)': 'Submarine', '(9, 2)': 'Submarine'}}
+INFO:root:Message sent to client: {'type': 'opponent board', 'message': {'(1, 4)': 'Carrier', '(1, 5)': 'Carrier', '(1, 6)': 'Carrier', '(1, 7)': 'Carrier', '(1, 8)': 'Carrier', '(3, 2)': 'Battleship', '(4, 2)': 'Battleship', '(5, 2)': 'Battleship', '(6, 2)': 'Battleship', '(3, 6)': 'Cruiser', '(4, 6)': 'Cruiser', '(5, 6)': 'Cruiser', '(4, 9)': 'Cruiser', '(5, 9)': 'Cruiser', '(6, 9)': 'Cruiser', '(6, 4)': 'Destroyer', '(7, 4)': 'Destroyer', '(7, 7)': 'Destroyer', '(8, 7)': 'Destroyer', '(8, 9)': 'Submarine', '(9, 2)': 'Submarine'}}
+INFO:root:Message received from 125c2465-dc06-44cb-bdca-6e852bfae2d0: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from b55c85cc-e1f4-4333-892b-2062dbfdacf4: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Connection created: <socket.socket fd=1136, family=2, type=1, proto=0, laddr=('127.0.0.10', 123), raddr=('127.0.0.1', 50893)>
+INFO:root:Message sent to client: {'type': 'player_id', 'message': 'bc199e9a-b062-477c-a9d7-4aa49272d808'}
+INFO:root:Connection created: <socket.socket fd=1040, family=2, type=1, proto=0, laddr=('127.0.0.10', 123), raddr=('127.0.0.1', 50894)>
+INFO:root:Message sent to client: {'type': 'player_id', 'message': 'eca601ea-0e28-471a-b7bb-f0964845c68d'}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'ready'}
+DEBUG:root:Player is ready. Ready players: 1
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ready'}
+DEBUG:root:Player is ready. Ready players: 2
+DEBUG:root:Both players are ready. Starting game...
+INFO:root:Message sent to client: {'type': 'player_order', 'message': ['bc199e9a-b062-477c-a9d7-4aa49272d808', 'eca601ea-0e28-471a-b7bb-f0964845c68d']}
+INFO:root:Message sent to client: {'type': 'player_order', 'message': ['bc199e9a-b062-477c-a9d7-4aa49272d808', 'eca601ea-0e28-471a-b7bb-f0964845c68d']}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'board', 'message': {'(0, 6)': 'Battleship', '(0, 7)': 'Battleship', '(0, 8)': 'Battleship', '(0, 9)': 'Battleship', '(1, 5)': 'Carrier', '(1, 6)': 'Carrier', '(1, 7)': 'Carrier', '(1, 8)': 'Carrier', '(1, 9)': 'Carrier', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 9)': 'Submarine', '(0, 5)': 'Submarine'}}
+INFO:root:Message sent to client: {'type': 'opponent board', 'message': {'(0, 6)': 'Battleship', '(0, 7)': 'Battleship', '(0, 8)': 'Battleship', '(0, 9)': 'Battleship', '(1, 5)': 'Carrier', '(1, 6)': 'Carrier', '(1, 7)': 'Carrier', '(1, 8)': 'Carrier', '(1, 9)': 'Carrier', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 9)': 'Submarine', '(0, 5)': 'Submarine'}}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 8)': 'Destroyer', '(3, 9)': 'Destroyer', '(4, 7)': 'Destroyer', '(5, 7)': 'Destroyer', '(3, 7)': 'Submarine', '(4, 9)': 'Cruiser', '(5, 9)': 'Cruiser', '(6, 9)': 'Cruiser', '(4, 8)': 'Submarine'}}
+INFO:root:Message sent to client: {'type': 'opponent board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 8)': 'Destroyer', '(3, 9)': 'Destroyer', '(4, 7)': 'Destroyer', '(5, 7)': 'Destroyer', '(3, 7)': 'Submarine', '(4, 9)': 'Cruiser', '(5, 9)': 'Cruiser', '(6, 9)': 'Cruiser', '(4, 8)': 'Submarine'}}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 1}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'update_turn'}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to client: {'type': 'turn', 'message': 0}
+INFO:root:Message received from bc199e9a-b062-477c-a9d7-4aa49272d808: {'type': 'ship_sunk'}
+INFO:root:Message received from eca601ea-0e28-471a-b7bb-f0964845c68d: {'type': 'quit'}
+ERROR:root:Error processing message: 'eca601ea-0e28-471a-b7bb-f0964845c68d'

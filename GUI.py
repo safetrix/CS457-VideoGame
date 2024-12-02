@@ -561,15 +561,13 @@ class GUI:
         self.check_win_condition()
         # Check win condition
     def check_win_condition(self):
+        self.send_client_message({"type": "game over"})
         if self.opponent_ships_remaining == 0 and self.ships_remaining > 0:
             print(f"{self.name} wins!")
             self.current_turn_label.config(text=f"{self.name} wins!")
-            self.end_game()
-            self.game_over()
         elif self.ships_remaining == 0 and self.opponent_ships_remaining > 0:
             print("You lost!")
-            self.end_game()
-            self.game_over()
+        
     
     def update_attack_state(self):
         if self.player_id == self.player_order[self.current_turn_index]:
@@ -638,6 +636,9 @@ class GUI:
                 self.ships_remaining = self.ships_remaining - 1
                 print(f"Ship has been sunk! Ships remaining: {self.ships_remaining}")
                 self.sunk_label.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 10 * 30)
+            elif message["type"] == "game over":
+                self.end_game()
+                self.game_over()
             else:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
