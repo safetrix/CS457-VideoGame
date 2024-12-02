@@ -1,0 +1,256 @@
+INFO:root:Connection created: ('127.0.0.10', 123)
+INFO:root:Message received from server: {'type': 'player_id', 'message': 'ba2de87c-4b31-40c2-ba61-181e2fcf01d8'}
+INFO:root:Connection created: ('127.0.0.10', 123)
+INFO:root:Message received from server: {'type': 'player_id', 'message': 'a8570191-ef09-49fa-af39-0159016aa31a'}
+INFO:root:Message sent to server: {'type': 'ready'}
+INFO:root:Message sent to server: {'type': 'ready'}
+INFO:root:Message received from server: {'type': 'notice', 'message': 'Please Create your board'}
+INFO:root:Message received from server: {'type': 'notice', 'message': 'Please Create your board'}
+INFO:root:Message received from server: {'type': 'player_order', 'message': ['ba2de87c-4b31-40c2-ba61-181e2fcf01d8', 'a8570191-ef09-49fa-af39-0159016aa31a']}
+INFO:root:Message received from server: {'type': 'player_order', 'message': ['ba2de87c-4b31-40c2-ba61-181e2fcf01d8', 'a8570191-ef09-49fa-af39-0159016aa31a']}
+INFO:root:Message sent to server: {'type': 'board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 9)': 'Submarine', '(6, 8)': 'Submarine'}}
+INFO:root:Message received from server: {'type': 'opponent board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 9)': 'Submarine', '(6, 8)': 'Submarine'}}
+INFO:root:Message sent to server: {'type': 'board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 8)': 'Submarine', '(6, 9)': 'Submarine'}}
+INFO:root:Message received from server: {'type': 'opponent board', 'message': {'(0, 5)': 'Carrier', '(0, 6)': 'Carrier', '(0, 7)': 'Carrier', '(0, 8)': 'Carrier', '(0, 9)': 'Carrier', '(1, 6)': 'Battleship', '(1, 7)': 'Battleship', '(1, 8)': 'Battleship', '(1, 9)': 'Battleship', '(2, 7)': 'Cruiser', '(2, 8)': 'Cruiser', '(2, 9)': 'Cruiser', '(3, 7)': 'Cruiser', '(3, 8)': 'Cruiser', '(3, 9)': 'Cruiser', '(4, 8)': 'Destroyer', '(4, 9)': 'Destroyer', '(5, 8)': 'Destroyer', '(5, 9)': 'Destroyer', '(6, 8)': 'Submarine', '(6, 9)': 'Submarine'}}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'ship_sunk'}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'ship_sunk'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message received from server: {'type': 'turn', 'message': 0}
+INFO:root:Message sent to server: {'type': 'update_turn'}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message received from server: {'type': 'turn', 'message': 1}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '2'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '2'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '2'}, 'codename': None}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '3'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '3'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '3'}, 'codename': None}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '212'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '212'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '212'}, 'codename': None}
+INFO:root:Message sent to server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
+INFO:root:Message received from server: {'type': 'chat', 'message': {'username': '2', 'message': '1'}, 'codename': None}
