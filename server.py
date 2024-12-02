@@ -103,7 +103,7 @@ class Server:
                 "message": self.current_turn_index
             })
             elif message["type"] == "ship_sunk":
-                self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "ship_sunk"})
+                self.broadcast_message({"type": "ship_sunk"})
                 print("Notifying opponent of sunk ship.")
         except Exception as e:
             logging.error(f"Error processing message: {e}")
