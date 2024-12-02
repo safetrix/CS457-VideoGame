@@ -560,13 +560,16 @@ class GUI:
                     self.send_client_message({"type": "ship_sunk"})
         self.check_win_condition()
         # Check win condition
+
     def check_win_condition(self):
         if self.opponent_ships_remaining == 0 and self.ships_remaining > 0:
+            self.send_client_message({"type": "game over"})
             print(f"{self.name} wins!")
             self.current_turn_label.config(text=f"{self.name} wins!")
             self.send_client_message({"type": "game over"})
         elif self.ships_remaining == 0 and self.opponent_ships_remaining > 0:
             print("You lost!")
+            self.send_client_message({"type": "game over"})
         
     
     def update_attack_state(self):
