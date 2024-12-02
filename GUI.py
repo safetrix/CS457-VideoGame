@@ -81,6 +81,9 @@ class GUI:
         self.attack_button = tk.Button(main_window, text="Attack!", state=tk.DISABLED, command=self.on_attack)
         self.attack_button.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 8 * 30)
 
+        self.miss_label = tk.Label(self.main_window, text = "Miss!")
+        self.hit_label = tk.Label(self.main_window, text = "Hit!")
+
         self.hide_buttons()
 
         self.canvas = tk.Canvas(main_window, width=self.canvas_width, height=self.canvas_height) 
@@ -488,11 +491,14 @@ class GUI:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="red")
                 self.attack_history[(row, col)] = 'Hit'
                 print(f"{self.name}'s attack at ({row}, {col}) was a ... HIT!")
-                
+                self.hit_label.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 9 * 30)
+                self.miss_label.place_forget()
             else:
                 self.canvas.itemconfig(self.cells[(row, col)], fill="yellow")
                 self.attack_history[(row, col)] = 'Miss'
                 print(f"{self.name}'s attack at ({row}, {col}) was a ... MISS!")
+                self.miss_label.place(x=self.canvas_x + self.canvas_width + 20, y=self.canvas_y + 9 * 30)
+                self.hit_label.place_forget()
         self.update_attack_state()
     
     def check_ship_sunk():
@@ -632,6 +638,8 @@ class GUI:
         else:
             logging.info("Window is already closed.")
 
-        
+    def hide_label(self):
+        self.miss_label.place_forget()  
+        self.hit_label.place_forget()
 # Create the main application window
 # Create an instance of the GUI class
