@@ -558,6 +558,7 @@ class GUI:
                     self.opponent_ships_remaining -= 1
                     # Send message that ship is sunk
                     self.send_client_message({"type": "ship_sunk"})
+        self.check_win_condition()
         # Check win condition
     def check_win_condition(self):
         if self.opponent_ships_remaining == 0 and self.ships_remaining > 0:
