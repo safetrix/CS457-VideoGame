@@ -102,6 +102,9 @@ class Server:
                 "type": "turn",
                 "message": self.current_turn_index
             })
+            elif message["type"] == "ship_sunk":
+                self.send_client_message(self.clients[next(pid for pid in self.clients if pid != player_id)]["socket"], {"type": "ship_sunk"})
+                print("Notifying opponent of sunk ship.")
         except Exception as e:
             logging.error(f"Error processing message: {e}")
 
@@ -179,9 +182,6 @@ class Server:
             })
             
         
-
-        
-
         # self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
         # random.shuffle(self.turn_order)  # Shuffle to select who starts first
         # self.current_turn = 0
