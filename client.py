@@ -2,6 +2,7 @@ import logging
 import json
 from GUI import GUI
 import tkinter as tk
+import argparse
 
 class Client:
     def __init__(self, gui):
@@ -19,8 +20,6 @@ class Client:
     
         self.GUI.start_game(host, port)
        
-
-
     def get_command(self):
         return input(f"Enter command ({'/'.join(self.available_commands)}): ")
     
@@ -37,8 +36,14 @@ class Client:
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Process some flags.")
+    parser.add_argument('-p', '--port', type=int, help='Specify the port number.')
+    parser.add_argument('-i', '--ip', type=str, help='Specify the IP address.')
+
+    args = parser.parse_args()
     main_window = tk.Tk()
     # Create an instance of the GUI class
     app = GUI(main_window)
     client = Client(app)
-    client.start_connection("127.0.0.1", 65432)
+    print(args.ip, args.port)
+    client.start_connection(args.ip, args.port)
