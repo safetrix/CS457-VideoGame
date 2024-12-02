@@ -642,12 +642,12 @@ class GUI:
         except Exception as e:
             logging.error("Error handling message:", e)
     
-    def check_win_condition(self):
-        opponent_ships = set(self.opponent_board.values())
-        if not opponent_ships:
-            print(f"{self.name} wins!")
-            self.current_turn_label.config(text=f"{self.name} wins!")
-            self.end_game()
+   # def check_win_condition(self):
+    #    opponent_ships = set(self.opponent_board.values())
+     #   if not opponent_ships:
+      #      print(f"{self.name} wins!")
+       #     self.current_turn_label.config(text=f"{self.name} wins!")
+        #    self.end_game()
     
     def end_game(self):
         self.canvas.unbind("<Motion>")
