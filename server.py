@@ -183,21 +183,6 @@ class Server:
                 "message": self.player_order
             })
             
-        
-        # self.turn_order = list(self.ready_players)  # Ensure turn order matches the players
-        # random.shuffle(self.turn_order)  # Shuffle to select who starts first
-        # self.current_turn = 0
-        # self.notify_game_start()  # Notify both clients that the game has started
-        # current_player = self.clients[self.turn_order[self.current_turn]]["codename"]  # Define current_player
-        # self.broadcast_message({
-        #     "type": "notice",
-        #     "message": f"The game has started! {current_player} goes first."
-        # })
-        # self.broadcast_message({
-        #     "type": "update",
-        #     "game_state": self.get_game_state(),
-        #     "current_turn": current_player  # Send codename instead of player ID
-        # })
 
 
     def default_board(self): # Empty board for now, custom boards will be used in GUI
