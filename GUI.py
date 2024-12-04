@@ -683,7 +683,7 @@ class GUI:
         message.pack(pady=20, )
 
     # Exit button to close the application
-        exit_button = tk.Button(popup, text="Exit Game", command=self.main_window.quit(), font=("Arial", 14))
+        exit_button = tk.Button(popup, text="Exit Game", command=self.main_window.quit, font=("Arial", 14))
         exit_button.pack(pady=10)
     def quit_game(self):
         if not self.window_closed:
