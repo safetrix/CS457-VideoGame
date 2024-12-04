@@ -149,12 +149,7 @@ class GUI:
         self.server_conn_message = tk.Label(self.main_window, text=f"Server Connected!", font=("Helvetica", 24))
         self.server_conn_message.place(relx=0.5, rely=0.5, anchor="center")
         self.main_window.after(5000, self.show_name_entry)
-        #except Exception as e:
-            #print("Error:", e)
-            #logging.error("Error in connection attempt:", e)SS
-            #self.server_conn_message.place_forget()
-            #self.error_label = tk.Label(self.main_window, text=f"There was an error connecting to the server, check log for more information", font=("Helvetica", 24))
-            #self.error_label.place(relx=0.5, rely=0.45, anchor="center")
+   
         return True
     def show_name_entry(self):
         self.server_conn_message.place_forget()
@@ -598,9 +593,7 @@ class GUI:
                     break
             except Exception as e:
                 logging.error("Error receiving server message:", e)
-            # if self.turn == 2:
-            #     self.current_turn_label.config(text=f"Player {self.turn}'s Turn")
-            #     self.turn = 1
+           
 
 
     def handle_server_message(self, message):
@@ -646,13 +639,7 @@ class GUI:
                 print(f"Unknown message type: {message['type']}")
         except Exception as e:
             logging.error("Error handling message:", e)
-    
-   # def check_win_condition(self):
-    #    opponent_ships = set(self.opponent_board.values())
-     #   if not opponent_ships:
-      #      print(f"{self.name} wins!")
-       #     self.current_turn_label.config(text=f"{self.name} wins!")
-        #    self.end_game()
+
     
     def end_game(self):
         self.canvas.unbind("<Motion>")
