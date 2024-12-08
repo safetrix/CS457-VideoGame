@@ -22,3 +22,9 @@ This is going to be a simple implementation of the classic battleship game
 **Security/Risk Evaluation:**
 
 There are multiple inherent security risks associated with this multiplayer game. First, there is potentially no limit to the length of a message that one player can send to the other, which could be used to cause a buffer overflow and potentially harm the other player or server hosting the game. Some testing found that there was some form of message length limiting present in our current system, however, we did not test a full range of characters and message lengths. Secondly, both connections are unencrypted and the IPs of both players are kept within the log file, meaning if a player or third party gained access to this file they would be able to find the IPs of both players. This could be avoided by encrypting the IPs of both players or the log file itself. With the way the game functions now, both players must know the IP address and the specific port that the server is broadcasting to, which in a final public implementation of this game this would be changed as that would introduce a broad number of security risks to the server/servers hosting the game. This would require a lot of changes to how the game is run and connects to the server, however, it could be done by changing the server so that it broadcasts the available lobby to any potential users on the network, then the GUI allows the users to find this lobby (potentially in a list of lobbies) and join rather than inputting the server IP and port manually in the command line.
+
+**What went well:**
+
+
+**What could be improved on:**
+
